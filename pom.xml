@@ -14,4 +14,55 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <!-- Hibernate Core -->
+        <!--
+            This dependency brings in the core Hibernate library, which is responsible for providing ORM functionality.
+            It helps map Java objects to database tables and provides various features for working with databases.
+        -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.1.6.Final</version>
+        </dependency>
+
+        <!-- Hibernate Validator -->
+        <!--
+            This dependency provides the Hibernate Validator framework.
+            Hibernate Validator allows you to add validation constraints to your Java beans using annotations.
+            It's used for data validation and ensuring that the data meets specified requirements before being processed.
+        -->
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate.validator</groupId>-->
+<!--            <artifactId>hibernate-validator</artifactId>-->
+<!--            <version>7.0.1.Final</version>-->
+<!--        </dependency>-->
+
+        <!-- MySQL Connector/J -->
+        <!--
+            This dependency provides the MySQL Connector/J driver.
+            It enables your Java application to connect to a MySQL database.
+            The driver is necessary to establish communication between your application and the MySQL database server.
+        -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.27</version>
+        </dependency>
+
+        <!-- lombok -->
+        <!--
+            Project Lombok is a library that helps you reduce boilerplate code in your Java classes by providing
+            annotations to generate methods like getters, setters, constructors, and more. It works with your IDE to
+            generate the methods during compilation, saving you from writing repetitive code.
+        -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
 </project>
