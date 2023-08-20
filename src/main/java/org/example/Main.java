@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.entity.Course;
 import org.example.entity.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,12 +13,15 @@ public class Main {
     public static void main(String[] args) {
 
         // creating entity object whose data needs to be inserted in db
-        Student student = new Student(6, "Ravi Singh", 22);
+        Student student = new Student(8, "Ravi Singh", 22);
+        Course course = new Course(1, "JAVA");
 
         // creating Configuration object which will be used to create SessionFactory object which will eventually create a session object.
         // 'hibernate.cfg.xml' file holds all the configuration required to connect to the database
-        // addAnnotatedClass is used to declare that 'Student' is an entity class
-        Configuration config = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Student.class);
+        // addAnnotatedClass is used to declare that 'Student' and 'Course' are entity classes
+        Configuration config = new Configuration().configure("hibernate.cfg.xml")
+                                .addAnnotatedClass(Student.class)
+                                .addAnnotatedClass(Course.class);
         ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
 
         // using Configuration object to build SessionFactory
@@ -33,6 +37,7 @@ public class Main {
 
         // finally saving the data
         session.save(student);
+        session.save(course);
 
         // committing the sql query
         transaction.commit();
