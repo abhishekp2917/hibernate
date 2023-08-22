@@ -1,22 +1,28 @@
 package org.example.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.*;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 public class Student {
 
     @Id
-    private int id;
+    @Column(name = "studentID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     private int age;
+
+    @Embedded
+    private Address address;
+
+    @ElementCollection
+    private List<String> phoneNumbers;
 }

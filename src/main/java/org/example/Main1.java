@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Main {
+public class Main1 {
     public static void main(String[] args) {
 
         ArrayList<Student> students = new ArrayList<>();
@@ -110,12 +110,17 @@ public class Main {
         // committing the sql query
         transaction.commit();
 
+        // fetching Student and Course data whose id is 1 in form of object
         Student student = (Student) session.get(Student.class, (long)1);
         Course course = (Course) session.get(Course.class, (long)1);
 
+        // closing the current session
+        session.close();
+
+        // printing out the fetched student and course data
         System.out.println(student);
         System.out.println(course);
     }
 
-    
+
 }
