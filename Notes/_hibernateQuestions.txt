@@ -1,0 +1,252 @@
+*   What is Hibernate ?
+
+>>  Hibernate is an open-source, Java-based framework for Object-Relational Mapping (ORM). It simplifies the process of
+    developing database-driven applications in Java by allowing developers to work with objects and classes in their code
+    rather than dealing with the underlying SQL database queries. Hibernate effectively bridges the gap between the
+    object-oriented programming model and the relational database model.
+
+    Here are key features and concepts related to Hibernate:
+
+    (1) Object-Relational Mapping (ORM):
+
+        Hibernate maps Java objects to database tables and vice versa. It provides a way to interact with the database
+        using Java objects, making database operations more object-oriented.
+
+    (2) Database Independence:
+
+        Hibernate abstracts the underlying database system, allowing developers to write database-agnostic code. You can
+        switch between different databases (e.g., MySQL, PostgreSQL, Oracle) without changing your application code.
+
+    (3) Automatic Table Generation:
+
+        Hibernate can generate database tables based on the entity classes, simplifying database setup.
+
+    (4) HQL (Hibernate Query Language):
+
+        Hibernate provides its query language, similar to SQL, called HQL. This language is used to query and manipulate
+        data stored in the database using Java objects.
+
+    (5) Caching:
+
+        Hibernate offers caching mechanisms to improve performance by reducing database round-trips. It includes
+        first-level (session-level) and second-level (application-level) caching.
+
+    (6) Lazy Loading:
+
+        Hibernate supports lazy loading, where related objects are loaded from the database only when they are accessed.
+        This can help reduce the amount of data retrieved from the database.
+
+    (7) Associations and Relationships:
+
+        Hibernate supports various types of associations and relationships between entities, including one-to-one,
+        one-to-many, many-to-one, and many-to-many.
+
+    (8) Transaction Management:
+
+        Hibernate simplifies transaction management, allowing you to control transactions declaratively.
+
+________________________________________________________________________________________________________________________
+
+*   What is an ORM ?
+
+>>  As the name suggest, an ORM (Object-Relational Mapping) is a framework for mapping java objects with Database tables
+    (relation).
+
+    As we know, in java we deals with objects but in database, there is no such concept. There we have tables or relation
+    which has columns and rows. Suppose there is an object let say student object having data encapsulated inside the
+    object. If my requirement is to store this object (object data) into table, so without an ORM framework, I have to
+    first extract the data from that object and load it into a SQL query and execute it to persist it into database.
+
+    In above case, I have to write the sql query by my own and had to specify the mapping of object fields with table
+    columns in the SQL query. But by leveraging the feature of ORM framework, I don't have to write any query for mapping
+    or persisting the object. All this will be taken care by ORM framework.
+
+________________________________________________________________________________________________________________________
+
+*   Why do we need ORM framework ?
+
+>>  Following are the reason why we should opt for ORM framework for persisting objects :
+
+    (1) Object-Oriented Paradigm:
+
+        Most modern programming languages, such as Java, Python, and C#, are inherently object-oriented. ORM frameworks
+        allow developers to work with objects in their code, providing a natural and consistent way to manage data,
+        rather than dealing with relational database tables and SQL queries. This alignment between programming languages
+        and databases makes code more intuitive and easier to maintain.
+
+    (2) Database Abstraction:
+
+        ORM frameworks provide a level of abstraction that allows developers to interact with the database using the
+        programming language's native constructs, rather than writing raw SQL queries. This abstraction simplifies
+        database access and reduces the need to understand intricate database schema details.
+
+    (3) Reduced Boilerplate Code:
+
+        Without ORM, developers often need to write a significant amount of boilerplate code to map database records to
+        objects and vice versa. ORM frameworks handle these mappings automatically, saving developers time and effort.
+
+    (4) Portability and Database Independence:
+
+        ORM frameworks aim to be database-agnostic. This means that the same application code can work with multiple
+        database systems without modification. Developers can switch from one database to another (e.g., from MySQL to
+        PostgreSQL) without major code changes, as long as the ORM framework supports both databases.
+
+    (5) Simplified CRUD Operations:
+
+        ORM frameworks simplify CRUD (Create, Read, Update, Delete) operations on the database. Instead of writing SQL
+        statements for each operation, developers can use object-oriented methods and properties to manipulate data.
+
+    (6) Query Language:
+
+        ORM frameworks typically include a query language (e.g., HQL in Hibernate) that resembles SQL but operates on
+        objects and their properties. This language allows developers to perform complex queries in a more intuitive and
+        structured way.
+
+    (7) Relationship Management:
+
+        Handling relationships and associations between entities (e.g., one-to-one, one-to-many, many-to-many) is
+        simplified with ORM. Developers can define these relationships in the entity classes, and the framework manages
+        how they are stored and retrieved in the database.
+
+    (8) Performance Optimization:
+
+        ORM frameworks often include features like caching and lazy loading to improve application performance. These
+        optimizations reduce the number of database queries and data retrieval overhead.
+
+    (9) Transaction Management:
+
+        ORM frameworks offer built-in transaction management, ensuring data consistency and integrity. Developers can
+        control transactions declaratively, which simplifies error handling and rollback.
+
+    (10) Productivity and Maintainability:
+
+        ORM frameworks can significantly improve developer productivity and code maintainability. Developers can focus on
+        the application's business logic rather than getting bogged down in database-specific concerns and SQL coding.
+
+________________________________________________________________________________________________________________________
+
+*   What is JPA ?
+
+>>  JPA stands for Java Persistence API, and it is a standard Java-based specification for ORM (Object-Relational Mapping).
+    JPA defines a set of interfaces and methods for interacting with relational databases in a more object-oriented way,
+    similar to other ORM frameworks like Hibernate.
+
+    It is to be noted that JPA doesn't provide implementation for ORM instead it provides sets of specification which
+    other JPA implementation provider like Hibernate, Eclipselink etc follows.
+
+    One can't have ORM functionality in their application using just JPA and without any of its implementation provider.
+
+________________________________________________________________________________________________________________________
+
+*   What is the difference between Hibernate and JPA ?
+
+>>
+
+________________________________________________________________________________________________________________________
+
+*   How to get started with Hibernate ?
+
+>>  Here's a step-by-step guide to get started with Hibernate:
+
+    (1) Add Hibernate and database connector dependencies:
+
+        Add the Hibernate dependency to POM.xml file along with the database dependency to connect to the database as
+        Hibernate can't interact with DB on its own.
+
+        Since Hibernate framework abstract the Database, it relies on the underlying JDBC drivers to perform the low-level,
+        database-specific operations like establishing connections, executing SQL queries, and fetching results.
+
+        ```
+            <!-- hibernate dependency -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>4.1.6.Final</version>
+            </dependency>
+
+            <!-- underline database dependency. Here we are using MySQL  -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.27</version>
+            </dependency>
+        ```
+
+    (2) Hibernate Configuration:
+
+        Create a Hibernate configuration file (hibernate.cfg.xml) that includes database connection details and other
+        settings.
+
+        ```
+            <hibernate-configuration>
+                <session-factory>
+                    <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+                    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/your_database</property>
+                    <property name="hibernate.connection.username">your_username</property>
+                    <property name="hibernate.connection.password">your_password</property>
+                    <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+                    <!-- Other Hibernate properties -->
+                </session-factory>
+            </hibernate-configuration>
+        ```
+
+    (3) Configure the configuration file and persist an object (entity) using Session object:
+
+        Follow below steps to persist an object through code:
+
+        Step 1: Load Hibernate configuration
+        Step 2: Create a SessionFactory
+        Step 3: Create a Session
+        Step 4: Begin a transaction
+        Step 5: Create and persist an object
+        Step 6: Commit the transaction
+        Step 7: Close the session
+        Step 8: Close the SessionFactory
+
+        ```
+            import org.hibernate.Session;
+            import org.hibernate.SessionFactory;
+            import org.hibernate.Transaction;
+            import org.hibernate.cfg.Configuration;
+
+            public class HibernateExample {
+                public static void main(String[] args) {
+                    // Load Hibernate configuration
+                    Configuration configuration = new Configuration();
+                    configuration.configure("hibernate.cfg.xml"); // Load your Hibernate configuration file
+
+                    // Create a SessionFactory
+                    SessionFactory sessionFactory = configuration.buildSessionFactory();
+
+                    // Create a Session
+                    Session session = sessionFactory.openSession();
+
+                    // Begin a transaction
+                    Transaction transaction = session.beginTransaction();
+
+                    try {
+                        // Create and persist an object
+                        Employee employee = new Employee("John Doe", "john@example.com");
+                        session.save(employee);
+
+                        // Commit the transaction
+                        transaction.commit();
+
+                        System.out.println("Employee saved successfully with ID: " + employee.getId());
+                    } catch (Exception e) {
+                        if (transaction != null) {
+                            transaction.rollback();
+                        }
+                        e.printStackTrace();
+                    } finally {
+                        // Close the session
+                        session.close();
+                    }
+
+                    // Close the SessionFactory
+                    sessionFactory.close();
+                }
+            }
+        ```
+________________________________________________________________________________________________________________________
+
