@@ -1,43 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Hibernate configuration file for MySQL database. -->
 <!DOCTYPE hibernate-configuration PUBLIC
         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
-
-<!-- Root element representing the Hibernate configuration. -->
 <hibernate-configuration>
-
-    <!-- Configuration for Hibernate's SessionFactory. -->
     <session-factory>
-
-        <!-- Specifies the SQL dialect for MySQL databases. -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-
-        <!-- Specifies the JDBC driver class for MySQL. -->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-
-        <!-- JDBC URL for connecting to MySQL database. -->
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/temp</property>
-
-        <!-- Username for database connection. -->
         <property name="hibernate.connection.username">root</property>
-
-        <!-- Password for database connection. -->
         <property name="hibernate.connection.password">password@123</property>
-
-        <!-- Specifies schema creation behavior. -->
         <property name="hbm2ddl.auto">update</property>
-
-        <!-- Enables SQL query logging. -->
         <property name="hibernate.show_sql">true</property>
-
-        <!-- Specifies SQL query formatting in logs. -->
-        <property name="hibernate.format_sql">false</property>
-
-        <!-- Enables second-level cache. -->
+        <!-- Disables second-level cache. -->
         <property name="hibernate.cache.use_second_level_cache">false</property>
-
-        <!-- Specifies the cache region factory class. -->
-        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
     </session-factory>
 </hibernate-configuration>

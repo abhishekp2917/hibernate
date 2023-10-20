@@ -1,23 +1,25 @@
-package org.example;
+/*
+    Code to demonstrate first level caching of entities
+*/
 
-import org.example.entity.Department;
-import org.example.entity.Employee;
+package org.example.caching;
+
 import org.example.entity.Laptop;
-import org.example.entity.Technology;
+import org.example.util.SessionCreator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
-public class Main3 {
+public class Main1 {
     public static void main(String[] args) {
 
         // creating SessionFactory object to open multiple session
-        SessionFactory sessionFactory = getSessionFactory("hibernate-mysql.cfg.xml");
+        // configuring Hibernate with config file which has configuration for first-level caching
+        SessionFactory sessionFactory = SessionCreator.getSessionFactory(
+                                    "caching\\hibernate-first-level-caching.cfg.xml",
+                                            Laptop.class);
 
-        // opening 1st session
+        // opening 1st session and transaction
         Session session1 = sessionFactory.openSession();
         Transaction transaction1 = session1.beginTransaction();
 
@@ -38,22 +40,12 @@ public class Main3 {
 
         // fetching Laptop data whose id is 1 similar to what we fetched from 1st session
         // since the data is not present in 1st level caching of this session, it will fetch the data from 2nd level caching
-        // 2nd level caching will only work if we have configured and enabled 'hibernate.cache.use_second_level_cache' property in '.cfg.xml' file
+        // 2nd level caching will only work if we have configured and enabled 'hibernate.cache.use_second_level_cache'
+        // property in '.cfg.xml' file which we haven't done in this case due to which it will get data from DB
         Laptop laptop3 = (Laptop) session2.get(Laptop.class, (long)1);
 
         // committing and closing the 2nd session
         transaction2.commit();
         session2.close();
-    }
-
-    private static SessionFactory getSessionFactory(String configFile) {
-        Configuration config = new Configuration().configure(configFile)
-                .addAnnotatedClass(Employee.class)
-                .addAnnotatedClass(Laptop.class)
-                .addAnnotatedClass(Department.class)
-                .addAnnotatedClass(Technology.class);
-        ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-        SessionFactory sessionFactory = config.buildSessionFactory(registry);
-        return sessionFactory;
     }
 }

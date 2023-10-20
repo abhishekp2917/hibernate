@@ -54,13 +54,13 @@ public class Main2 {
                 .department(department2)
                 .build();
 
-        // since Join Table schema will be define by Technology entity, adding list of employees mapped to a particular technology
+        // since Join Table schema will be defined by Technology entity, adding list of employees mapped to a particular technology
         // while inserting the data in DB, this list will be considered during insertion
         technology1.setEmployees(new ArrayList<>(Arrays.asList(employee2, employee3)));
         technology2.setEmployees(new ArrayList<>(Arrays.asList(employee3)));
 
         // creating session object
-        Session session = getSession("hibernate-mssql.cfg.xml");
+        Session session = getSession("hibernate-mysql.cfg.xml");
 
         Transaction transaction = session.beginTransaction();
 
