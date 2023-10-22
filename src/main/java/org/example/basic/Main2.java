@@ -1,6 +1,9 @@
-package org.example;
+package org.example.basic;
 
-import org.example.entity.*;
+import org.example.entity.basic.Department;
+import org.example.entity.basic.Employee;
+import org.example.entity.basic.Laptop;
+import org.example.entity.basic.Technology;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -60,7 +63,7 @@ public class Main2 {
         technology2.setEmployees(new ArrayList<>(Arrays.asList(employee3)));
 
         // creating session object
-        Session session = getSession("hibernate-mysql.cfg.xml");
+        Session session = getSession("basic/hibernate-mysql.cfg.xml");
 
         Transaction transaction = session.beginTransaction();
 

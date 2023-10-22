@@ -4,7 +4,7 @@
 
 package org.example.caching;
 
-import org.example.entity.Laptop;
+import org.example.entity.basic.Laptop;
 import org.example.util.SessionCreator;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

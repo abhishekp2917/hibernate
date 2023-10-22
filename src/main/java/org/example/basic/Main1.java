@@ -1,8 +1,8 @@
-package org.example;
+package org.example.basic;
 
-import org.example.entity.Address;
-import org.example.entity.Course;
-import org.example.entity.Student;
+import org.example.entity.basic.Address;
+import org.example.entity.basic.Course;
+import org.example.entity.basic.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -86,7 +86,7 @@ public class Main1 {
         // creating Configuration object which will be used to create SessionFactory object which will eventually create a session object.
         // 'hibernate-mysql.cfg.xml' file holds all the configuration required to connect to the database
         // addAnnotatedClass is used to declare that 'Student' and 'Course' are entity classes
-        Configuration config = new Configuration().configure("hibernate-mssql.cfg.xml")
+        Configuration config = new Configuration().configure("basic/hibernate-mssql.cfg.xml")
                                 .addAnnotatedClass(Student.class)
                                 .addAnnotatedClass(Course.class);
         ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();

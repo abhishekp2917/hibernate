@@ -1,9 +1,9 @@
-package org.example;
+package org.example.basic;
 
-import org.example.entity.Department;
-import org.example.entity.Employee;
-import org.example.entity.Laptop;
-import org.example.entity.Technology;
+import org.example.entity.basic.Department;
+import org.example.entity.basic.Employee;
+import org.example.entity.basic.Laptop;
+import org.example.entity.basic.Technology;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -15,7 +15,7 @@ public class Main3 {
     public static void main(String[] args) {
 
         // creating SessionFactory object to open multiple session
-        SessionFactory sessionFactory = getSessionFactory("hibernate-mysql.cfg.xml");
+        SessionFactory sessionFactory = getSessionFactory("basic/hibernate-mysql.cfg.xml");
 
         // opening 1st session
         Session session1 = sessionFactory.openSession();

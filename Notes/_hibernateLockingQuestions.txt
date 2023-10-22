@@ -1,0 +1,214 @@
+*   What is Locking in Hibernate ?
+
+>>  In Hibernate, locking is a mechanism that allows you to control concurrent access to database records, preventing
+    multiple transactions from modifying the same data simultaneously. There are different types of locking strategies
+    in Hibernate, and you can choose the one that best fits your application's requirements. The main types of locking
+    strategies in Hibernate are:
+
+    (1) Optimistic Locking:
+
+        Optimistic locking is a strategy where the system assumes that conflicts between transactions are rare, and it
+        doesn't prevent multiple transactions from reading and potentially updating the same data simultaneously.
+        It typically uses a version number or a timestamp to track changes to entities. When a transaction reads an entity,
+        it stores the version or timestamp. When the transaction updates the entity, it checks whether the version or
+        timestamp has changed since it was last read. If it has changed, a concurrent modification exception can be thrown.
+
+        You can implement optimistic locking in Hibernate using the @Version annotation or the <version> element in your
+        entity mapping.
+
+    (2) Pessimistic Locking:
+
+        Pessimistic locking is a strategy where transactions explicitly lock data records, preventing other transactions
+        from accessing them until the lock is released. Hibernate provides a LockMode enum that allows you to specify
+        the type of pessimistic lock you want to apply when loading an entity. For example, you can use LockMode.UPGRADE
+        to apply a write lock and LockMode.UPGRADE_NOWAIT to apply a write lock with a no-wait option.
+
+        You can apply pessimistic locking using Hibernate's Session.lock() or Session.get() methods with the appropriate
+        lock mode.
+________________________________________________________________________________________________________________________
+
+*   How Optimistic Locking works and how to implement it ?
+
+>>  The fundamental idea behind optimistic locking is to allow multiple transactions to work on the same data
+    simultaneously, with the assumption that conflicts are relatively rare. When a conflict does occur, it is detected
+    and resolved before any data is permanently modified.
+
+    Here's how optimistic locking works:
+
+    (1) Versioning:
+
+        To implement optimistic locking, you typically add a version field to each entity that may be subject to concurrent
+        updates. This version field can be an integer or a timestamp. Hibernate will automatically increment this field
+        each time the entity is updated.
+
+        For example, in a Hibernate entity class, you might have a version field like this:
+
+        ```
+            class MyEntity {
+
+                ...// other fields
+
+                @Version
+                private long version;
+            }
+        ```
+
+    (2) Reading Data:
+
+        When a transaction reads data from the database, it retrieves the entity along with its version number. The
+        version number represents the state of the entity at the time of reading.
+
+    (3) Updating Data:
+
+        When a transaction wants to update the data, it retrieves the entity, makes the necessary changes, and then
+        attempts to save the entity back to the database.
+
+    (4) Conflict Detection:
+
+        Before persisting the changes, Hibernate checks if the version of the entity in the database matches the version
+        that was originally read. If the versions match, it means no other transaction has updated the entity since it
+        was read. The transaction proceeds to save the changes and increments/updates the version.
+
+    (5) Handling Conflicts:
+
+        If the versions don't match, Hibernate detects a conflict. It throws an OptimisticLockException (or similar) to
+        indicate that the data has changed since it was read.
+
+    (6) Conflict Resolution:
+
+        It's then up to the application to handle the conflict. Common approaches include notifying the user of the
+        conflict, allowing the user to merge changes, forcing the user to reload the data and reapply their changes, or
+        simply rejecting the update.
+
+    (7) Reattempting the Update:
+
+        After resolving the conflict, the application can reattempt the update, ensuring that the changes are applied in
+        a consistent and controlled manner.
+________________________________________________________________________________________________________________________
+
+*   What are various Pessimistic LockMode in Hibernate ?
+
+>>  Below are the details of various `LockMode` options in Hibernate:
+
+    (1) LockMode.NONE:
+
+       - This is the default lock mode.
+       - No lock is acquired when loading an entity.
+       - It allows concurrent access to the entity without locking.
+       - Use this when you don't need any locking behavior.
+
+    (2) LockMode.READ:
+
+       - Acquires a shared (read) lock on the entity.
+       - It allows other transactions to read the entity but prevents write operations.
+       - Similar to `PESSIMISTIC_READ`, but not specific to pessimistic locking.
+       - Useful for read-only transactions.
+
+    (3) LockMode.WRITE:
+
+       - Acquires an exclusive (write) lock on the entity.
+       - Prevents other transactions from both reading and writing to the entity until the lock is released.
+       - Use this when you want exclusive access for updates.
+
+    (4) LockMode.OPTIMISTIC:
+
+       - Optimistic locking mode.
+       - It acquires an optimistic read lock, allowing other transactions to also read the entity concurrently.
+       - Conflicts are detected at the time of update.
+       - Useful for minimizing the impact on read operations while detecting conflicts during updates.
+
+    (5) LockMode.OPTIMISTIC_FORCE_INCREMENT:
+
+       - Optimistic locking mode that forces an update of the version attribute.
+       - Acquires an optimistic read lock and increments the version attribute even if no changes have been made.
+       - Useful for capturing timestamps of the last update.
+
+    (6) LockMode.PESSIMISTIC_FORCE_INCREMENT:
+
+       - Pessimistic locking mode that forces an update of the version attribute.
+       - Similar to `PESSIMISTIC_WRITE` but also increments the version attribute, even if no changes have been made.
+       - Useful for capturing timestamps of the last update.
+
+    (7) LockMode.PESSIMISTIC_READ:
+
+       - Pessimistic locking mode for read operations.
+       - Acquires a shared (read) lock on the entity, allowing other transactions to read but preventing write operations.
+       - Useful when you want to ensure that data remains consistent during read operations.
+
+    (8) LockMode.PESSIMISTIC_WRITE:
+
+       - Pessimistic locking mode for write operations.
+       - Acquires an exclusive (write) lock on the entity, preventing other transactions from reading or writing to it
+         until the lock is released.
+       - Useful when you want exclusive access for updates.
+
+    (9) LockMode.UPGRADE_NOWAIT:
+
+       - Acquires an upgrade lock, but it will throw an exception if another transaction has already locked the entity.
+       - It prevents waiting for the lock.
+       - Useful when you want to ensure that the entity is not locked by other transactions.
+
+    (10) LockMode.UPGRADE:
+
+        - Acquires an upgrade lock, allowing an entity to be upgraded from a shared lock to an exclusive lock later in
+          the transaction.
+        - Useful for upgrading shared locks to exclusive locks when necessary.
+________________________________________________________________________________________________________________________
+
+*   What are the various ways to apply Pessimistic lock ?
+
+>>  Here are the common ways to add pessimistic locks to entities in Hibernate:
+
+    (1) LockMode with session.get or session.load:
+
+        You can apply a pessimistic lock to an entity by specifying a LockMode when calling session.get or session.load.
+
+        ```
+            MyEntity entity = (MyEntity) session.get(MyEntity.class, entityId, LockMode.PESSIMISTIC_WRITE);
+        ```
+
+    (2) HQL (Hibernate Query Language) or JPQL (Java Persistence Query Language):
+
+        You can use a pessimistic lock in an HQL or JPQL query to lock the retrieved entities.
+        The FOR UPDATE clause is used to apply a pessimistic write lock.
+
+        ```
+            Query query = session.createQuery("FROM MyEntity e WHERE e.id = :id FOR UPDATE");
+            query.setParameter("id", entityId);
+            MyEntity entity = (MyEntity) query.uniqueResult();
+        ```
+
+    (3) Native SQL Queries:
+
+        You can use native SQL queries to apply pessimistic locks explicitly.
+        The FOR UPDATE clause is used to apply a pessimistic write lock.
+
+        ```
+            SQLQuery query = session.createSQLQuery("SELECT * FROM my_entity WHERE id = :id FOR UPDATE");
+            query.setParameter("id", entityId);
+            query.addEntity(MyEntity.class);
+            MyEntity entity = (MyEntity) query.uniqueResult();
+        ```
+
+    (4) Criteria API:
+
+        You can use the Hibernate Criteria API to apply pessimistic locks.
+
+        ```
+            Criteria criteria = session.createCriteria(MyEntity.class);
+            criteria.add(Restrictions.eq("id", entityId));
+            criteria.setLockMode(LockMode.PESSIMISTIC_WRITE);
+            MyEntity entity = (MyEntity) criteria.uniqueResult();
+        ```
+
+    (5) LockOptions with session.get or session.load:
+
+        You can use LockOptions to specify the lock mode and apply it when loading an entity.
+
+        ```
+            LockOptions lockOptions = new LockOptions(LockMode.PESSIMISTIC_WRITE);
+            MyEntity entity = (MyEntity) session.get(MyEntity.class, entityId, lockOptions);
+        ```
+        This approach provides more control over the lock options.
+________________________________________________________________________________________________________________________
+
