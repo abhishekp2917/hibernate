@@ -1,0 +1,214 @@
+*   When to use and how to establish One-to-One mapping ?
+
+>>  Let's say you have two entities: 'Employee' and 'Laptop', in which either both or any one of them have reference to
+    other object.
+
+    In this case if we want to persist any of these objects, first we have to establish one-to-one relationship between
+    them.
+
+    Follow below steps to establish the one-to-one relationship.
+
+    (1) Create the Employee Entity
+
+        ```
+            @Entity
+            public class Employee {
+
+                @Id
+                @Column(name = "employeeID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+
+                private String name;
+
+                @OneToOne(cascade = CascadeType.ALL)
+                @JoinColumn(name = "laptopID")
+                private Laptop laptop;
+            }
+        ```
+
+        In the Employee entity, we use the @OneToOne annotation to establish a one-to-one relationship with the Laptop.
+
+        In @OneToOne annotation we have used 'cascade' attribute which is use to specify that whatever operation is
+        done on this entity, the same operation will be done on associated entity (in this case it is Laptop). If we save
+        employee entity, it will save laptop entity also due to which no need to explicitly save the laptop entity.
+
+        we use @JoinColumn to specify the reference column name in the Employee table which will hold the reference of
+        Laptop table
+
+    (2) Create the Laptop Entity
+
+        ```
+            @Entity
+            public class Laptop {
+
+                @Id
+                @Column(name = "laptopID")
+                @GeneratedValue(strategy = GenerationType.AUTO)
+                private long id;
+
+                private String name;
+
+                @OneToOne(mappedBy = "laptop")
+                private Employee employee;
+            }
+        ```
+
+        Here also in Laptop entity, we use the @OneToOne annotation to establish a one-to-one relationship with the Employee.
+
+        It is mandatory to annotate the Employee field with @OneToOne annotation cause we have annotated Laptop field with
+        the same annotation in Employee entity in 1st step.
+
+        In @OneToOne annotation, we have given attribute 'mappedBy' as 'laptop' which will specify that linking of these
+        two entity will be done by 'laptop' variable of other mapped table (Employee table in this case). By doing so,
+        we are specifying that the foreign key that links the two tables will be in the Employee table.
+
+        If we don't use 'mappedBy' attribute in any of the entity, then both the entity table will have a reference column
+        or foreign key to reference other table.
+
+    (3) Perform Database Operations
+
+        You can now perform database operations using Hibernate to save, update, and retrieve Employee and Laptop entities,
+        and the one-to-one relationship will be maintained.
+
+        ```
+            public static void main(String[] args) {
+
+                // Create a Hibernate SessionFactory
+                SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+
+                // Open a session
+                Session session = sessionFactory.openSession();
+                session.beginTransaction();
+
+                // Create a Person and Address
+                Employee employee = new Employee("Alice");
+                Laptop laptop = new Laptop("Mac");
+
+                // Establish the one-to-one relationship
+                employee.setLaptop(laptop);
+                laptop.setEmployee(employee);
+
+                // Save the Employee, which will cascade to the Laptop
+                session.save(employee);
+
+                // Commit the transaction
+                session.getTransaction().commit();
+
+                // Close the session and the SessionFactory
+                session.close();
+                sessionFactory.close();
+            }
+        ```
+________________________________________________________________________________________________________________________
+
+*   When to use and how to establish One-to-Many mapping ?
+
+>>  A one-to-many mapping is used to represent a relationship between two entities in which one entity is associated
+    with multiple instances of another entity for example a list of Employee associated with a Department.
+
+    Follow below setps to establish the one-to-Many relationship.
+
+    (1) Create the Employee Entity
+
+        ```
+            @Entity
+            public class Employee {
+
+                @Id
+                @Column(name = "employeeID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;'
+
+                private String name;
+
+                @ManyToOne()
+                @JoinColumn(name = "departmentID")
+                private Department department;
+            }
+        ```
+
+        In the Employee entity, we use the @ManyToOne annotation to indicate that many Employee entities are associated
+        with one Department entity.
+
+        we use @JoinColumn to specify the reference column name in the Employee table which will hold the reference of
+        Department table.
+
+    (2) Create the Department Entity
+
+        ```
+            @Entity
+            public class Department {
+
+                @Id
+                @Column(name = "departmentID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+
+                private String name;
+
+                @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
+                private List<Employee> employees;
+            }
+        ```
+        In Department entity, we use the @OneToMany annotation to indicate that one Department can have reference to many
+        Employee entity.
+
+        It is mandatory to annotate the employees field of Department entity with @OneToMany annotation cause we have
+        annotated department field of Employee table with @ManyToOne annotation in 1st step.
+
+        In @OneToMany annotation, we have given attribute 'mappedBy' as 'department' which will specify that linking of
+        these two entity will be done by 'department' variable of other mapped table (Employee table in this case). By
+        doing so, we are specifying that the foreign key that links the two tables will be in the Employee table.
+
+        Even if we don't use 'mappedBy' attribute in any of the entity, unlike one-to-one relationship only one reference
+        column will be created.
+
+        In @OneToMany annotation we have used 'cascade' attribute which is use to specify that whatever operation is
+        done on this entity, the same operation will be done on associated entity (in this case it is Department). If we save
+        Department entity, it will save Employee entity also due to which no need to explicitly save the Employee entity.
+
+    (3) Perform Database Operations
+
+        You can now perform database operations using Hibernate to save, update, and retrieve Employee and Department
+        entities, and the one-to-many relationship will be maintained.
+
+        ```
+            public static void main(String[] args) {
+
+                // Create a Hibernate SessionFactory
+                SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+
+                // Open a session
+                Session session = sessionFactory.openSession();
+                session.beginTransaction();
+
+                // creating department object
+                Department department1 = new Department("Engineering");
+
+                // creating Employee object and associating department with the respective employee
+                Employee employee1 = new Employee("Abhishek");
+                Employee employee2 = new Employee("Ravi");
+                Employee employee3 = Employee("Saurabh");
+
+                // associating employees with their respective department
+                List<Employee> employees = new ArrayList<>();
+                employees.add(employee1);
+                employees.add(employee2);
+                employees.add(employee3);
+                department1.setEmployees(employees);
+
+                // Save the Department, which will cascade to the Employee
+                session.save(department1);
+
+                // Commit the transaction
+                session.getTransaction().commit();
+
+                // Close the session and the SessionFactory
+                session.close();
+                sessionFactory.close();
+            }
+        ```
+________________________________________________________________________________________________________________________
+
+

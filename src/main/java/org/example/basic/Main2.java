@@ -2,7 +2,7 @@ package org.example.basic;
 
 import org.example.entity.basic.Department;
 import org.example.entity.basic.Employee;
-import org.example.entity.basic.Laptop;
+import org.example.entity.mapping.oneToOne.Laptop;
 import org.example.entity.basic.Technology;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

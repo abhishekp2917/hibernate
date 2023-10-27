@@ -1,6 +1,7 @@
 package org.example.entity.basic;
 
 import lombok.*;
+import org.example.entity.mapping.oneToOne.Laptop;
 
 import javax.persistence.*;
 import java.util.List;
