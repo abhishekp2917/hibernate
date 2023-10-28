@@ -42,7 +42,7 @@ public class Main2 {
                 .department(department1)
                 .build();
 
-        // associating employees with their respective department
+        // associating department with their respective list of employees
         List<Employee> employees = new ArrayList<>();
         employees.add(employee1);
         employees.add(employee2);

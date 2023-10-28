@@ -21,6 +21,8 @@ public class Student {
     private String name;
     private int age;
 
+    // since this object is not an entity, we are defining this as @Embedded due to which whatever variables
+    // this object holds will be embedded in student table
     @Embedded
     private Address address;
 

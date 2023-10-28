@@ -105,9 +105,9 @@ ________________________________________________________________________________
 *   When to use and how to establish One-to-Many mapping ?
 
 >>  A one-to-many mapping is used to represent a relationship between two entities in which one entity is associated
-    with multiple instances of another entity for example a list of Employee associated with a Department.
+    with multiple instances of another entity. For example a list of Employee associated with a Department.
 
-    Follow below setps to establish the one-to-Many relationship.
+    Follow below steps to establish the one-to-Many relationship.
 
     (1) Create the Employee Entity
 
@@ -165,7 +165,7 @@ ________________________________________________________________________________
         column will be created.
 
         In @OneToMany annotation we have used 'cascade' attribute which is use to specify that whatever operation is
-        done on this entity, the same operation will be done on associated entity (in this case it is Department). If we save
+        done on this entity, the same operation will be done on associated entity (in this case it is Employee). If we save
         Department entity, it will save Employee entity also due to which no need to explicitly save the Employee entity.
 
     (3) Perform Database Operations
@@ -200,6 +200,165 @@ ________________________________________________________________________________
 
                 // Save the Department, which will cascade to the Employee
                 session.save(department1);
+
+                // Commit the transaction
+                session.getTransaction().commit();
+
+                // Close the session and the SessionFactory
+                session.close();
+                sessionFactory.close();
+            }
+        ```
+________________________________________________________________________________________________________________________
+
+*   When to use and how to establish Many-to-Many mapping ?
+
+>>  A many-to-many mapping is used to represent a relationship between two entities where each entity can be associated
+    with multiple instances of the other entity. For example Student entity associated with multiple Course entity and
+    Course entity associated with multiple Student.
+
+    Follow below steps to establish the Many-to-Many relationship.
+
+    (1) Create the Course Entity
+
+        ```
+            @Entity
+            public class Course {
+                @Id
+                @Column(name="CourseID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+
+                private String name;
+
+                @ManyToMany()
+                @JoinTable(
+                        name = "CourseStudents",
+                        joinColumns = @JoinColumn(name = "CourseID"),
+                        inverseJoinColumns = @JoinColumn(name = "StudentID")
+                )
+                private List<Student> students;
+            }
+        ```
+
+        In the Course entity, we use the @ManyToMany annotation to indicate that many Course entities are associated
+        with many Student entity.
+
+        we use @JoinTable annotation to specify the details of the junction table that will be created to manage the
+        many-to-many relationship. The name attribute specifies the name of the junction table ("CourseStudents"), and
+        joinColumns and inverseJoinColumns specify the foreign key columns of that junction table that link this entity
+        (Course) with the other entity (Student).
+
+        If we don't specify the @JoinTable then hibernate will create junction table with default name having column named
+        by default.
+
+    (2) Create the Student Entity
+
+        ```
+            @Entity
+            public class Student {
+                @Id
+                @Column(name = "studentID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+
+                private String name;
+
+                @ManyToMany(cascade = CascadeType.ALL, mappedBy = "students")
+                private List<Course> courses;
+            }
+        ```
+
+        In Student entity, we use the @ManyToMany annotation to indicate that many Student can be associated with many
+        Course entity.
+
+        It is mandatory to annotate the courses field of Student entity with @ManyToMany annotation cause we have annotated
+        students field of Course entity with @ManyToMany annotation in 1st step.
+
+        In @ManyToMany annotation, we have given attribute 'mappedBy' as 'students' which will specify that linking of
+        these two entity will be done by 'students' variable of other mapped table (Course table in this case). By
+        doing so, Hibernate will create only one junction table else will create junction table for each entity
+
+        In @ManyToMany annotation we have used 'cascade' attribute which is use to specify that whatever operation is
+        done on this entity, the same operation will be done on associated entity (in this case it is Course). If we save
+        Student entity, it will save Course entity also due to which no need to explicitly save the Course entity.
+
+    (3) Perform Database Operations
+
+        You can now perform database operations using Hibernate to save, update, and retrieve Student and Course
+        entities, and the many-to-many relationship will be maintained.
+
+        ```
+            public static void main(String[] args) {
+
+                // Create a Hibernate SessionFactory
+                SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+
+                // Open a session
+                Session session = sessionFactory.openSession();
+                session.beginTransaction();
+
+                // creating Student object
+                Student student1 = Student.builder()
+                        .name("Abhishek")
+                        .build();
+
+                Student student2 = Student.builder()
+                        .name("Ravi")
+                        .build();
+
+                Student student3 = Student.builder()
+                        .name("Saurabh")
+                        .build();
+
+                Student student4 = Student.builder()
+                        .name("Tushar")
+                        .build();
+
+                // creating Course object
+                Course course1 = Course.builder()
+                        .name("JAVA")
+                        .build();
+
+                Course course2 = Course.builder()
+                        .name("NodeJS")
+                        .build();
+
+                Course course3 = Course.builder()
+                        .name("HTML")
+                        .build();
+
+                Course course4 = Course.builder()
+                        .name("ReactJS")
+                        .build();
+
+                // associating Student with their respective list of Courses
+                List<Course> frontendCourses = new ArrayList<>();
+                frontendCourses.add(course1);
+                frontendCourses.add(course2);
+                student1.setCourses(frontendCourses);
+
+                List<Course> backendCourses = new ArrayList<>();
+                backendCourses.add(course3);
+                backendCourses.add(course4);
+                student2.setCourses(backendCourses);
+
+                // associating Course with their respective list of Students
+                List<Student> javaBatch = new ArrayList<>();
+                javaBatch.add(student1);
+                javaBatch.add(student2);
+                course1.setStudents(javaBatch);
+
+                List<Student> HTMLBatch = new ArrayList<>();
+                HTMLBatch.add(student3);
+                HTMLBatch.add(student4);
+                course2.setStudents(HTMLBatch);
+
+                // persisting student objects, which will cascade to the Course
+                session.save(student1);
+                session.save(student2);
+                session.save(student3);
+                session.save(student4);
 
                 // Commit the transaction
                 session.getTransaction().commit();
