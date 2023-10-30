@@ -1,3 +1,7 @@
+/*
+    Code demonstrate how to persist and fetch data using hibernate
+*/
+
 package org.example.basic;
 
 import org.example.entity.basic.Address;

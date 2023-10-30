@@ -1,0 +1,148 @@
+*   What is Persistence Context ?
+
+>>  "Persistence context" is a container that keeps track of the objects (entities) you're working with in your database.
+    It's like a work area where you do your job.
+
+    The persistence context is typically associated with a Hibernate Session in a standard Java SE application or with
+    an EntityManager in a Java EE application using Java Persistence API (JPA). Here's when the persistence context gets
+    created:
+
+    (1) Java SE Application (Hibernate's Session):
+
+        The persistence context is created when you open a new Session and exists for the duration of the Session.
+
+        When you close the Session, the persistence context is also closed, and any managed entities become detached.
+
+    (2) Java EE Application (JPA's EntityManager):
+
+        In a Java EE environment using JPA, the EntityManager is typically managed by the container, and you often don't
+        create it explicitly. The container manages the creation and scope of the EntityManager.
+
+        When you begin a transaction the container creates and associates an EntityManager with the current transaction.
+
+        The persistence context is created when the EntityManager is associated with a transaction. When the transaction
+        ends (commits or rolls back), the EntityManager is closed, and the persistence context ends.
+
+    For each session or entity manager, a separate Persistence context is created and all the managing of that session or
+    entity manager entities will be done by the corresponding Persistence context.
+________________________________________________________________________________________________________________________
+
+*   How many entity of same type (Table) and same id can be there in Persistence context ?
+
+>>  A single Persistence context can have only 1 entity of same type and same id. Although, multiple Persistence context
+    can have entity of same type and same id.
+________________________________________________________________________________________________________________________
+
+*   Explain various Entity states ?
+
+>>  In Hibernate, entities go through different states during their lifecycle. These states are often referred to as
+    "entity states". Here are the various states of an entity in Hibernate:
+
+    (1) Transient (New) State:
+
+        An entity is in a transient state when it has just been created. In this state, the entity is not associated with any
+        Hibernate Session or EntityManager, and it has no representation in the database.
+
+        Transient entities are not managed by Hibernate and are not part of any persistence context.
+
+        To transition from Transient to Persistent state :
+
+            - session.save() in Hibernate
+            - entityManager.persist() in JPA
+            - session.saveOrUpdate() in Hibernate
+            - session.merge() in Hibernate or entityManager.merge() in JPA
+
+            When you call the save(), saveOrUpdate() or merge() method on a transient entity, Hibernate creates a new
+            persistent copy of the entity with the same property values and the transient entity will become eligible for
+            garbage collection.
+
+            The new copy is associated with the current Hibernate Session or EntityManager and becomes a persistent entity.
+
+    (2) Persistent (Managed) State:
+
+        An entity is in a persistent state when it is associated with a Hibernate Session (in Hibernate) or an
+        EntityManager (in JPA). In this state, Hibernate keeps track of the entity's state and changes.
+
+        Any changes made to a persistent entity are automatically synchronized with the database when the session is
+        flushed or the transaction is committed.
+
+        Various ways to make transition of entity to Persistent state :
+
+            - When you save, persist or merge a transient entity
+            - When you merge detached entity
+            - When you refresh a Persistent entity
+
+        Methods to transition to Detached state:
+
+            - session.evict(entity) in Hibernate
+            - entityManager.detach(entity) in JPA
+            - session.close() in Hibernate or entityManager.close() in JPA
+            - session.clear() in Hibernate or entityManager.clear() in JPA
+
+            When you call the evict() or detach() method on persistent entity, it will move the entity to detached state
+            and will be no more managed by Persistent context. On making any changes to detached entity will have no
+            reflection on database on committing that particular transaction.
+
+            When you call close() or clear() method, all the persistent entity will move to detached state.
+
+        Methods to transition to Removed state:
+
+            - session.delete(entity) in Hibernate
+            - entityManager.remove(entity) in JPA.
+
+            When you call delete() or remove() method on persistent entity, hibernate will move the entity to removed
+            state and will issue a delete query to remove this row from DB on committing. This removed entity will be
+            eligible for garbage collection.
+
+            It is to be noted that any changes to removed state entity will have no reflection on DB.
+
+    (3) Detached State:
+
+        An entity becomes detached when it was previously in a persistent state but is no longer associated with a
+        Hibernate Session or an EntityManager.
+
+        This can happen when a session is closed or clear or an entity is explicitly detached.
+
+        Detached entities are no longer managed by Hibernate and are not part of the persistence context.
+        You can reattach a detached entity to a new session or EntityManager if needed.
+
+        Methods to transition to Persistent state:
+
+            - session.update(entity) in Hibernate
+            - session.saveOrUpdate(entity) in Hibernate
+            - session.merge(entity) in Hibernate or entityManager.merge(entity) in JPA
+
+            When you call saveOrUpdate() or update() on detached entity, Hibernate creates a new persistent copy of the
+            entity with the same property values.
+
+            In case of saveOrUpdate(), if that entity is not persisted in DB, then it will create a new entry in DB else
+            will update the entry.
+
+            In case of update(), if that entity is not persisted in DB, it will throw exception else will update the entity
+            in DB.
+
+            It is to be note that, if the detached entity which we want to save or update already exist in persistent context
+            of same id, it will throw exception as persistent context can have only 1 entity of a particular id.
+
+            When you call merge() on detached entity, if that entity already exists in persistent context, hibernate will
+            merge the detached entity with that persisted entity. If that specific entity is not present in persisted
+            context, then hibernate will issue a select query to get that entity from DB in persisted context and later
+            on will merge the detached entity with persisted entity.
+
+    (4) Removed (Deleted) State:
+
+        An entity is in the removed state when it has been marked for deletion.
+
+        When you call session.delete() (in Hibernate) or entityManager.remove() (in JPA), the entity enters this state.
+        The removal is typically scheduled, and the entity is deleted from the database when the session is flushed or
+        the transaction is committed.
+
+        Methods to transition to Persistent state:
+
+            - session.persist(entity) in Hibernate or entityManager.persist(entity) in JPA
+
+            When you call persist() on removed entity in same transaction, hibernate will move the entity to persistent
+            state.
+________________________________________________________________________________________________________________________
+
+
