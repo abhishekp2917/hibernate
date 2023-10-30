@@ -145,4 +145,45 @@ ________________________________________________________________________________
             state.
 ________________________________________________________________________________________________________________________
 
+*   Why it is necessary to implement hashcode() and equals() method of object when dealing with object sets ?
 
+>>  In hibernate, multiple objects of same data row could be present in multiple state and when comparing these objects
+    for similarity, we might found it to be dissimilar even though these objects represent the same data row
+
+    ```
+        public static void main(String[] args) {
+
+            // by opening the session, a new Persistence context will be created
+            Session session1 = sessionFactory.openSession();
+            Transaction transaction1 = session1.getTransaction();
+            transaction1.begin();
+
+            // creating a Person object
+            Person person1 = Person.builder().name("Abhishek").build();
+
+            // persisting the person entity
+            session1.save(person1);
+
+            // committing and closing the session which will detach the person1 and guide1 object from persistent state to
+            // detached state
+            transaction1.commit();
+            session1.close();
+
+            // opening the second session, a new Persistence context will be created
+            Session session2 = sessionFactory.openSession();
+            Transaction transaction2 = session2.getTransaction();
+            transaction2.begin();
+
+            // fetching the person entity which will be persisted in Persistent context
+            Person person2 = (Person) session2.get(Person.class, (long)1);
+
+            // checking if person2 and person1 are equal or not as both are in different state i.e. persistent state and detached state,
+            // if we haven't provided implementation for hashCode() and equals() method, both of these object will be treated
+            // as different else it will be similar object
+            System.out.println(person1.equals(person2));
+
+            transaction2.commit();
+            session2.close();
+        }
+    ```
+________________________________________________________________________________________________________________________

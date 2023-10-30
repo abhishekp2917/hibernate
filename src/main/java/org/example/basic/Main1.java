@@ -1,5 +1,5 @@
 /*
-    Code demonstrate how to persist and fetch data using hibernate
+    Code to demonstrate how to persist and fetch data using hibernate
 */
 
 package org.example.basic;

@@ -1,5 +1,5 @@
 /*
-    Code demonstrate state transition of entity across various hibernate states
+    Code to demonstrate state transition of entity across various hibernate states
 */
 
 package org.example.basic;

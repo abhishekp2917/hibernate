@@ -1,3 +1,7 @@
+/*
+    Code to demonstrate one to one mapping
+*/
+
 package org.example.mapping;
 
 import org.example.entity.mapping.oneToOne.Employee;

@@ -1,3 +1,7 @@
+/*
+    Code to demonstrate one to many mapping
+*/
+
 package org.example.mapping;
 
 import org.example.entity.mapping.oneToMany.Department;

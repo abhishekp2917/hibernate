@@ -1,3 +1,7 @@
+/*
+    Code to demonstrate many to many mapping
+*/
+
 package org.example.mapping;
 
 import org.example.entity.mapping.manyToMany.Course;
