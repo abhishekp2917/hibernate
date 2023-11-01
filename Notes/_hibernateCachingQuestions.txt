@@ -403,6 +403,29 @@ ________________________________________________________________________________
     the cache instead of hitting the database.
 ________________________________________________________________________________________________________________________
 
+*   Is it required to enable second level cache while leveraging query cache ?
+
+>>  Enabling the second-level cache is not strictly required to use the query cache, but it can improve performance in
+    certain scenarios.
+
+    When the second-level cache is enabled, query results can be cached at the entity or collection level, and the query
+    cache can take advantage of the second-level cache for query result data.
+
+    When query result is cached in query cache region, it also caches the resulted entity in second level cache and will
+    store the reference id of that second level cached entity in query cache. Due to which when same select query gets
+    executed again, hibernate will first check in query cache region and if it founds the query result there, it will get
+    the resulted entity from second level cache using the reference id that is stored in query cache.
+
+    When using query cache, hibernate stores the timestamp (timestamp when that query got executed) of that query. when
+    there is an update to the query result entity in second level cache, hibernate will insert a record of timestamp (when
+    this update happen) in the timestamp cache. Due to which, when after an update, if same query gets executed, hibernate
+    will first compare the timestamp entry in timestamp cache with the timestamp of that query in query cache.
+
+    If timestamp entry in timestamp cache is of later time than that in query cache, this will hint that the query result
+    has been updated due to which hibernate will execute the query again and will update the query and timestamp in query
+    cache.
+________________________________________________________________________________________________________________________
+
 *   What is the difference between @Cache and @Cacheable annotations ?
 
 >>  @Cache:

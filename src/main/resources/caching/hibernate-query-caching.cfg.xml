@@ -9,12 +9,18 @@
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/temp</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">password@123</property>
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">create</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
         <!-- Enables query caching -->
         <property name="hibernate.cache.use_query_cache">true</property>
+
+        <!--
+            Enables second level caching. Although it is not required but it will compliment the query cache and
+            will improve the performance
+        -->
+        <property name="hibernate.cache.use_second_level_cache">true</property>
 
         <!-- Specifies the cache region factory class. -->
         <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>

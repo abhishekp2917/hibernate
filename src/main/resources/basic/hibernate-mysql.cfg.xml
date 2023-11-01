@@ -32,7 +32,7 @@
         <property name="hibernate.show_sql">true</property>
 
         <!-- Specifies SQL query formatting in logs. -->
-        <property name="hibernate.format_sql">false</property>
+        <property name="hibernate.format_sql">true</property>
 
         <!-- Enables second-level cache. -->
         <property name="hibernate.cache.use_second_level_cache">false</property>

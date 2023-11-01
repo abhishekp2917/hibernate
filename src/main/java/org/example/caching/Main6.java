@@ -22,6 +22,20 @@ public class Main6 {
                                         Laptop.class,
                                         Person.class);
 
+
+
+        // opening session and beginning the transaction
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        // creating and persisting laptop object
+        Laptop laptop1 = Laptop.builder().name("Asus").build();
+        session.save(laptop1);
+
+        // committing and closing the session
+        transaction.commit();
+        session.close();
+
         // opening 1st session and beginning the transaction
         Session session1 = sessionFactory.openSession();
         Transaction transaction1 = session1.beginTransaction();
@@ -63,5 +77,35 @@ public class Main6 {
         // committing and closing the 2nd session
         transaction2.commit();
         session2.close();
+
+        // opening 3rd session
+        Session session3 = sessionFactory.openSession();
+        Transaction transaction3 = session3.beginTransaction();
+
+        Laptop laptop2 = (Laptop) session3.get(Laptop.class, (long)1);
+        laptop2.setName("Apple");
+
+        // committing and closing the 3rd session
+        transaction3.commit();
+        session3.close();
+
+        // opening 4th session
+        Session session4 = sessionFactory.openSession();
+        Transaction transaction4 = session4.beginTransaction();
+
+        // creating another query object having same query as previous one
+        Query query3 = session4.createQuery("FROM Laptop WHERE id = :id");
+        query3.setParameter("id", (long)1);
+        // to get leverage of query caching, we have to set each query object as cacheable
+        query3.setCacheable(true);
+
+        // executing the same query from another session
+        // since this query result was updated in 3rd session, the query cache entry will be invalidated and a new query
+        // will be issued to get the data
+        query3.list().forEach(System.out::println);
+
+        // committing and closing the 4th session
+        transaction4.commit();
+        session4.close();
     }
 }

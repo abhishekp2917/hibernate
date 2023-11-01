@@ -1,0 +1,108 @@
+*   What is Lazy Fetching ?
+
+>>  Lazy fetching in Hibernate is a strategy used to load data from a database in a more efficient manner, especially
+    when working with associations between entities. In Hibernate, entities often have relationships with other entities,
+    such as one-to-one, one-to-many, or many-to-many associations. Lazy fetching allows you to defer the loading of
+    associated entities until they are actually needed, rather than loading them eagerly along with the parent entity.
+
+    There are two primary fetching strategies in Hibernate:
+
+    (1) Eager Fetching:
+
+        In eager fetching, associated entities are loaded immediately when the parent entity is retrieved from the database.
+        This can result in fetching a large amount of data even if you don't intend to use it, which may lead to performance
+        issues.
+
+        By default, associated entity which are having one-to-one and many-to-one mapping are fetched Eagerly.
+
+    (2) Lazy Fetching:
+
+        In lazy fetching, associated entities are not loaded when the parent entity is retrieved. Instead, a proxy object
+        is associated with the parent entity and the associated entity is being loaded from the database only when you
+        explicitly request them. This helps to reduce the initial amount of data fetched from the database and can
+        improve performance.
+
+        By default, associated entity which are having one-to-many and many-to-many mapping are fetched Lazily.
+
+        It is to be noted that Lazy fetching of an associated entity will only work if the parent entity is in Persisted
+        state. Once it's out of the Persistent context, Lazy loading will not work.
+________________________________________________________________________________________________________________________
+
+*   What is N+1 fetching problem ?
+
+>>  The N+1 problem, often referred to as the "select N+1" problem, is a common performance issue which occurs when you
+    need to fetch a list of entities (e.g., a list of customers, products, or any objects) along with their related data
+    (e.g., associated orders, comments, or details).
+
+    The N+1 problem is named as such because, in a typical scenario, you end up executing N+1 database queries,
+    where N is the number of entities you initially fetch. Here's how it typically happens:
+
+    - Let say we have Student entity having one-to-one association with laptop entity.
+
+    - We fired a select query which will list out N students entity.
+
+    - Since, one-to-one association fetch strategy is EAGER, hibernate will issue N select query to fetch associated
+      laptop object of all N students object leading to N+1 select problem (1 query to fetch students list and N subsequent
+      query to fetch associated laptop object).
+
+    - Even if we change the fetch strategy to LAZY from EAGER, one accessing all the N student associated laptop entity,
+      hibernate will issue N select query leading to N+1 select problem again.
+________________________________________________________________________________________________________________________
+
+*   What is an Entity graph ?
+
+>>  Dynamic fetching via JPA (Jakarta Persistence API) Entity Graph allows you to define fetching strategies for entity
+    associations at the runtime dynamically, rather than using the default fetch strategies specified in your entity mappings.
+    This can be particularly useful when you want to optimize database queries and control which related entities are
+    fetched during a specific operation.
+
+    It is to be noted that, Entity graph is JPA specific and not part of Hibernate native API.
+
+    Here's how you can use dynamic fetching via Jakarta Persistence Entity Graph:
+
+    (1) Define an Entity Graph:
+
+        use @NamedEntityGraph annotation to define the 'name' of the entity graph and list of associated objects whose fetching
+        strategy you want to change dynamically
+
+        ```
+            @Entity
+            @NamedEntityGraph(
+                name = "department.employees",
+                attributeNodes = {
+                    @NamedAttributeNode("employees")
+                }
+            )
+            public class Department {
+
+                @Id
+                @Column(name = "departmentID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+                private String name;
+                @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "department")
+                private List<Employee> employees;
+            }
+
+            @Entity
+            public class Employee {
+
+                @Id
+                @Column(name = "employeeID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+                private String name;
+                @ManyToOne()
+                @JoinColumn(name = "departmentID")
+                private Department department;
+            }
+        ````
+
+    (2) Apply the Entity Graph and fetch the data:
+
+        ```
+            HashMap<String, Object> pros = new HashMap<>();
+            pros.put("jakarta.persistence.fetchgraph", entityManager2.getEntityGraph("department.employees"));
+            Department department2 = entityManager2.find(Department.class, (long)1, pros);
+        ```
+________________________________________________________________________________________________________________________
