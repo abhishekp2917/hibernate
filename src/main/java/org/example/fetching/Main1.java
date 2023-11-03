@@ -43,10 +43,10 @@ public class Main1 {
         // creating department object and associating employees and manager with department object
         Department department1 = Department.builder().name("Engineering").build();
         department1.setEmployees(employees1);
-        department1.setManager(manager1);
+//        department1.setManager(manager1);
 
         // associating department object with manager object
-        manager1.setDepartment(department1);
+//        manager1.setDepartment(department1);
 
         // persisting department object which will persist associated entity as well, as cascading is enabled
         session1.save(department1);

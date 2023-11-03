@@ -106,3 +106,147 @@ ________________________________________________________________________________
             Department department2 = entityManager2.find(Department.class, (long)1, pros);
         ```
 ________________________________________________________________________________________________________________________
+
+*   What are various fetch mode in Hibernate native API ?
+
+>>  Hibernate-specific @Fetch annotation accepts one of the following FetchModes:
+
+    (1) FetchMode.SELECT:
+
+        The association is going to be fetched using a secondary select for each individual entity, collection, or join
+        load. This mode can be used for either FetchType.EAGER or FetchType.LAZY.
+
+        ```
+            @Entity(name = "Department")
+            public static class Department {
+
+            	@Id
+            	private Long id;
+
+            	@OneToMany(mappedBy = "department")
+            	@Fetch(FetchMode.SELECT)
+            	private List<Employee> employees = new ArrayList<>();
+            }
+
+            @Entity(name = "Employee")
+            public static class Employee {
+
+            	@Id
+            	@GeneratedValue
+            	private Long id;
+
+            	@ManyToOne(fetch = FetchType.LAZY)
+            	private Department department;
+            }
+        ```
+        ```
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.getTransaction();
+            transaction.begin();
+
+            // getting department list
+            List<Department> departments = session.createQuery("select d from Department d").list();
+
+            // getting each department employee list will result in execution of select query for individual department
+            for(Department department : departments) {
+                System.out.println(department.getEmployees().size());
+            }
+
+            transaction.commit();
+            session.close();
+        ```
+
+    (2) FetchMode.JOIN:
+
+        Use an outer join to load the related entities, collections or joins when using direct fetching. This mode can
+        only be used for FetchType.EAGER.
+
+        FetchMode.JOIN acts as a FetchType.EAGER strategy. Even if we mark the association as FetchType.LAZY, the
+        FetchMode.JOIN will load the association eagerly.
+
+        ```
+            @Entity(name = "Department")
+            public static class Department {
+
+                @Id
+                private Long id;
+
+                @OneToMany(mappedBy = "department")
+                @Fetch(FetchMode.JOIN)
+                private List<Employee> employees = new ArrayList<>();
+            }
+
+            @Entity(name = "Employee")
+            public static class Employee {
+
+                @Id
+                @GeneratedValue
+                private Long id;
+
+                @ManyToOne(fetch = FetchType.LAZY)
+                private Department department;
+            }
+        ```
+        ```
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.getTransaction();
+            transaction.begin();
+
+            // getting department list
+            List<Department> departments = session.createQuery("select d from Department d").list();
+
+            // getting each department employee list will result in execution of subselect query to get employees list of
+            // all departments at once
+            for(Department department : departments) {
+                System.out.println(department.getEmployees().size());
+            }
+
+            transaction.commit();
+            session.close();
+        ```
+
+    (3) FetchMode.SUBSELECT:
+
+        Available for collections only. When accessing a non-initialized collection, this fetch mode will trigger loading
+        all elements of all collections of the same role for all owners associated with the persistence context using a
+        single secondary select.
+
+        ```
+            @Entity(name = "Department")
+            public static class Department {
+
+                @Id
+                private Long id;
+
+                @OneToMany(mappedBy = "department")
+                @Fetch(FetchMode.SUBSELECT)
+                private List<Employee> employees = new ArrayList<>();
+            }
+
+            @Entity(name = "Employee")
+            public static class Employee {
+
+                @Id
+                @GeneratedValue
+                private Long id;
+
+                @ManyToOne(fetch = FetchType.LAZY)
+                private Department department;
+            }
+        ```
+        ```
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.getTransaction();
+            transaction.begin();
+
+            // fetching department of id 1 will execute select query with outer join to get employee data also
+            Department department3 = (Department)session4.get(Department.class, (long)1);
+
+            // accessing property of employees list of department of id 1
+            System.out.println(department3.getEmployees().size());
+
+            transaction.commit();
+            session.close();
+        ```
+________________________________________________________________________________________________________________________
+

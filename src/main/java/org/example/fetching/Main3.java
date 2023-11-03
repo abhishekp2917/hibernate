@@ -14,7 +14,7 @@ public class Main3 {
     public static void main(String[] args) {
 
         // creating entity manager object which will create persistence context
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("my-persistence");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("my-persistence-unit");
         EntityManager entityManager1 = entityManagerFactory.createEntityManager();
         // beginning the transaction
         entityManager1.getTransaction().begin();

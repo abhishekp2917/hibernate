@@ -3,6 +3,9 @@ package org.example.entity.fetching;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -26,5 +29,6 @@ public class Department {
     @OneToOne(cascade = CascadeType.PERSIST, mappedBy = "department")
     private Manager manager;
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "department")
+    @Fetch(FetchMode.SELECT)
     private List<Employee> employees;
 }
