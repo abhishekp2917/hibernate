@@ -56,7 +56,7 @@ public class Main2 {
         transaction2.begin();
 
         // fetching list of students which will issue a select query
-        List<Student> students = session2.createQuery("FROM Student").list();
+        List<Student> students = session2.createQuery("SELECT s FROM Student s").list();
 
         // for each student, fetching it's associated laptop object
         // for each student, a separate select query will be issued leading to N+1 problem
