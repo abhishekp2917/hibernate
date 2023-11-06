@@ -187,3 +187,48 @@ ________________________________________________________________________________
         }
     ```
 ________________________________________________________________________________________________________________________
+
+*   What is the use of @OrderBy annotation ?
+
+>>  @OrderBy is an annotation used to specify the ordering of a collection of elements in an entity. The @OrderBy
+    annotation allows you to specify the order in which elements are retrieved from the database when you access the
+    collection.
+
+    It orders the collection of elements only while retrieving it but doesn't work while persisting the collections.
+
+    Here's how you can use @OrderBy in JPA:
+
+    ```
+        @Entity
+        public class Department {
+
+            @Id
+            @Column(name = "departmentID")
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private long id;
+            private String name;
+            @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "department")
+            @OrderBy("name DESC, id")
+            private List<Employee> employees;
+        }
+
+        @Entity
+        public class Employee {
+
+            @Id
+            @Column(name = "employeeID")
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private long id;
+            private String name;
+            @ManyToOne()
+            @JoinColumn(name = "departmentID")
+            private Department department;
+        }
+    ```
+
+    Here we have used @OrderBy annotation against list of employees, wherein we have specified the hibernate to order the
+    list of employees by their name in descending order and for employees having same name order them by their id in
+    ascending order (if not specifying the order direction, by default it will be in ascending order)
+
+    If we leave the @OrderBy annotation empty, the collection will be order based on their id by default.
+________________________________________________________________________________________________________________________
