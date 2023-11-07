@@ -232,3 +232,97 @@ ________________________________________________________________________________
 
     If we leave the @OrderBy annotation empty, the collection will be order based on their id by default.
 ________________________________________________________________________________________________________________________
+
+*   What is Inheritance mapping ?
+
+>>  In Hibernate, inheritance mapping is a technique used to map inheritance hierarchies of Java classes to relational
+    database tables. It allows you to persist and retrieve objects of different subclasses from a common table in the
+    database while maintaining the relationships between these classes. There are several inheritance mapping strategies
+    in Hibernate, each with its pros and cons.
+
+    Here are the main inheritance mapping strategies in Hibernate:
+
+    (1) InheritanceType.SINGLE_TABLE :
+
+        In Single Table Inheritance (STI), all subclasses are mapped to a single database table. A discriminator column is
+        used to differentiate between different subclasses.
+
+        Pros:
+            - Simple and efficient, as it minimizes the number of tables.
+            - Good for hierarchies with a small number of subclasses.
+        Cons:
+            - Can lead to a lot of null values in the table when there are many properties that are specific to only one subclass.
+            - May not be suitable for complex hierarchies.
+
+        Given below is an example of table schema :
+
+            Animal Table
+            =================================================================================
+            |   DType   |   animalID    |    name    |   breed               |   gender     |
+            =================================================================================
+            |   Cat     |    1          |    Xavier  |                       |   Male       |
+            |   Dog     |    2          |    Keto    |   Golden Retriever    |              |
+            =================================================================================
+
+    (2) InheritanceType.TABLE_PER_CLASS :
+
+        In Table per class (TPC), each subclass is mapped to its own database table. There is no discriminator column.
+
+        Pros:
+            - Reduces the number of null values in tables.
+            - Suitable for complex hierarchies with a large number of properties.
+        Cons:
+            - Can lead to more complex queries with multiple joins when retrieving data.
+
+        Given below is an example of table schema :
+
+            Cat Table
+            ================================================
+            |   animalID (PK)   |    name    |  gender     |
+            ================================================
+            |   1               |    Xavier  |  Male       |
+            ================================================
+
+            Dog Table
+            ==========================================================
+            |   animalID (PK)   |    name    |   breed               |
+            ==========================================================
+            |   2               |    Keto    |   Golden Retriever    |
+            ==========================================================
+
+    (3) InheritanceType.JOINED:
+
+        In joined subclass inheritance, each subclass has its own table, and there is a separate table for the superclass.
+        Subclasses share the primary key of the superclass table.
+
+        Pros:
+            - Ensures a clean database schema with minimal null values.
+            - Suitable for hierarchies with a moderate number of properties.
+        Cons:
+            - More complex database schema compared to STI.
+            - Retrieving data often requires multiple joins.
+
+        Given below is an example of table schema :
+
+            Animal Table
+            ==================================
+            |   animalID (PK)   |    name    |
+            ==================================
+            |    1              |    Xavier  |
+            |    2              |    Keto    |
+            ==================================
+
+            Cat Table
+            =====================================
+            |    gender     |  animalID (FK)    |
+            =====================================
+            |    Male       |  1                |
+            =====================================
+
+            Dog Table
+            =================================================
+            |    breed              |   animalID (FK)       |
+            =================================================
+            |    Golden Retriever   |   2                   |
+            =================================================
+________________________________________________________________________________________________________________________
