@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
+@Entity(name = "MappingOTOLaptop")
 public class Laptop {
     @Id
     @Column(name = "laptopID")

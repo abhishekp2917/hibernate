@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
+@Entity(name = "FetchingDepartment")
 @NamedEntityGraph(name = "department.employees",
         attributeNodes = @NamedAttributeNode("employees")
 )

@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "BasicEmployee")
 public class Employee {
 
     @Id

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
+@Entity(name = "FetchingLaptop")
 public class Laptop {
     @Id
     @Column(name = "laptopID")

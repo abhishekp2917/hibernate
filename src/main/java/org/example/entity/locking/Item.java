@@ -10,8 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
-
+@Entity(name = "LockingItem")
 public class Item {
 
     @Id

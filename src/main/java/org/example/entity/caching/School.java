@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
+@Entity(name = "CachingSchool")
 
 // The @Cache annotation is used for entity-level caching in Hibernate. When you annotate an entity class or a class
 // property with @Cache, you specify how Hibernate should cache instances of that entity class or collections of those

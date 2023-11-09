@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "MappingOTOEmployee")
 public class Employee {
     @Id
     @Column(name = "employeeID")

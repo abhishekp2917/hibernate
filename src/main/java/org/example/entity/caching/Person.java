@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
+@Entity(name = "CachingPerson")
 public class Person {
     @Id
     @Column(name = "personID")

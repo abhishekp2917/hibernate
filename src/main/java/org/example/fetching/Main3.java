@@ -4,9 +4,9 @@
 
 package org.example.fetching;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import org.example.entity.fetching.*;
 import java.util.*;
 
@@ -14,7 +14,7 @@ public class Main3 {
     public static void main(String[] args) {
 
         // creating entity manager object which will create persistence context
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("my-persistence-unit");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("mysql-persistence-unit");
         EntityManager entityManager1 = entityManagerFactory.createEntityManager();
         // beginning the transaction
         entityManager1.getTransaction().begin();

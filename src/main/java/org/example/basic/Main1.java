@@ -11,8 +11,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -93,11 +91,9 @@ public class Main1 {
         Configuration config = new Configuration().configure("basic/hibernate-mysql.cfg.xml")
                                 .addAnnotatedClass(Student.class)
                                 .addAnnotatedClass(Course.class);
-        ServiceRegistry registry = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
 
         // using Configuration object to build SessionFactory
-        // here we are passing 'ServiceRegistry' object as parameterless 'buildSessionFactory' is deprecated
-        SessionFactory sessionFactory = config.buildSessionFactory(registry);
+        SessionFactory sessionFactory = config.buildSessionFactory();
 
         // creating session from SessionFactory
         Session session = sessionFactory.openSession();

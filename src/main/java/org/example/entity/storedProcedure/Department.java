@@ -1,4 +1,4 @@
-package org.example.entity.mapping.oneToMany;
+package org.example.entity.storedProcedure;
 
 import lombok.*;
 import javax.persistence.*;
@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity(name = "MappingOTMDepartment")
+@Entity(name = "SPDepartment")
 public class Department {
 
     @Id

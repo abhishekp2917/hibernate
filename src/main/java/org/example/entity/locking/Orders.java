@@ -13,8 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity
-
+@Entity(name = "LockingOrders")
 public class Orders {
 
     @Id

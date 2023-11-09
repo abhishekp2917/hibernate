@@ -1,0 +1,179 @@
+*   How to execute Stored Procedure in JPA ?
+
+>>  In Hibernate, you can use the @NamedStoredProcedureQuery annotation to define and execute named stored procedures.
+    This annotation is part of the Java Persistence API (JPA) standard.
+
+     Here's an example of how to use @NamedStoredProcedureQuery:
+
+     Assuming you have a stored procedure named "GetDepartmentEmployeeInfo" that takes an department name as a parameter
+     and has output parameter which returns the count of employee of that specific department. In addition to this, it
+     returns the list of employees.
+
+     (1) Define the @NamedStoredProcedureQuery in your entity class:
+
+        ```
+            @Entity(name = "SPEmployee")
+            @NamedStoredProcedureQueries({
+                    @NamedStoredProcedureQuery(
+                            name = "SPGetDepartmentEmployeeInfo",
+                            procedureName = "GetDepartmentEmployeeInfo",
+                            parameters = {
+                                    @StoredProcedureParameter(
+                                            mode = ParameterMode.IN,
+                                            type = String.class,
+                                            name = "departmentName"),
+                                    @StoredProcedureParameter(
+                                            mode = ParameterMode.OUT,
+                                            type = Integer.class,
+                                            name = "employeeCount")
+                            },
+                            resultClasses = Employee.class
+                    )
+            })
+            public class Employee {
+
+                @Id
+                @Column(name = "employeeID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+                private String name;
+                @ManyToOne()
+                @JoinColumn(name = "departmentID")
+                private Department department;
+            }
+
+        ```
+
+        @NamedStoredProcedureQueries is used to define multiple named stored procedure queries if needed.
+
+        @NamedStoredProcedureQuery defines a single named stored procedure query in which :
+            - name specifies the name you want to use to reference this query.
+            - procedureName is the name of the stored procedure in the database.
+            - parameters defines the parameters for the stored procedure. In this case, it's an input parameter named
+              "depName" and output parameter "empCount". It is not necessary to match the parameters name with what it is
+              in DB
+            - resultClasses specifies the class that represents the result set returned by the stored procedure. In this
+              case it is "Employee"
+
+        Note :
+
+        you can define a @NamedStoredProcedureQuery in any entity class even if that entity has no direct relation
+        to the particular stored procedure. While it's common and recommended to define named stored procedure queries
+        in entities that have a logical association with the stored procedure.
+
+     (2) Execute the named stored procedure in your Java code:
+
+        ```
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            // create StoredProcedureQuery object using entity manager
+            StoredProcedureQuery storedProcedure = entityManager.createNamedStoredProcedureQuery("SPGetDepartmentEmployeeInfo");
+
+            // set the input parameter
+            storedProcedure.setParameter("departmentName", "Engineering");
+
+            // exceute the SP
+            storedProcedure.execute();
+
+            // use 'getOutputParameterValue()' to get the output parameter value
+            int employeeCount = (int) storedProcedure.getOutputParameterValue("employeeCount");
+            System.out.println(String.format("Total number of employee : %d", employeeCount));
+
+            // use 'getResultList()' to get the list of record selected by the SP
+            List<Employee> employees = storedProcedure.getResultList();
+            for(Employee employee : employees) System.out.println(String.format("ID : %d Name : %s", employee.getId(), employee.getName()));
+        ```
+________________________________________________________________________________________________________________________
+
+*   How to use Data Transfer Object (DTO) for StoredProcedure results ?
+
+>>  @SqlResultSetMapping is a JPA annotation that allows you to map the results of a stored procedure to a Java object
+    (Data Transfer Object ). It provides a way to define how the columns returned by the query are mapped to specific
+    fields in your Java entities or DTOs.
+
+    Suppose you have a stored procedure that returns personID and name. You want to map the result to a DTO class called
+    PersonDTO.
+
+    (1) Create the DTO class:
+
+        ```
+            public class PersonDTO {
+
+                private long id;
+                private String name;
+            }
+        ```
+
+    (2) Define the @SqlResultSetMapping:
+
+        ```
+            @Entity(name = "SPPerson")
+            @NamedStoredProcedureQueries({
+                    @NamedStoredProcedureQuery(
+                            name = "SPGetPersonInfo",
+                            procedureName = "GetPersonInfo",
+                            parameters = {
+                                    @StoredProcedureParameter(
+                                            mode = ParameterMode.IN,
+                                            type = Integer.class,
+                                            name = "personAge")
+                            },
+                            resultSetMappings = "PersonDTOMapping"
+                    )
+            })
+            @SqlResultSetMapping(
+                    name = "PersonDTOMapping",
+                    classes = @ConstructorResult(
+                            targetClass = PersonDTO.class,
+                            columns = {
+                                    @ColumnResult(name = "personID", type = Long.class),
+                                    @ColumnResult(name = "name", type = String.class),
+                            }
+                    )
+            )
+            public class Person {
+
+                @Id
+                @Column(name = "personID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+                private String name;
+                private int age;
+            }
+        ```
+
+        In this example, we define a @SqlResultSetMapping named "PersonDTOMapping" that maps the columns returned by the
+        stored procedure to the fields in PersonDTO. We specify that column 'personID' is of type Long and column 'name'
+        is of String type.
+
+        We also use @NamedStoredProcedureQuery to define the stored procedure and associate it with the result set
+        mapping using 'resultSetMappings' attribute in @NamedStoredProcedureQuery
+
+    (3) Execute the stored procedure:
+
+        ```
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            // create StoredProcedureQuery object using entity manager in which pass the name of the SP query
+            // don't pass the actual SP name instead pass the query name defined in @NamedStoredProcedureQuery annotation
+            StoredProcedureQuery storedProcedure = entityManager2.createNamedStoredProcedureQuery("SPGetPersonInfo");
+
+            // set the input parameter value
+            storedProcedure.setParameter("personAge", 23);
+
+            // execute the SP
+            storedProcedure.execute();
+
+            // use 'getResultList()' to get the list of record selected by the SP
+            // it will return list of PersonDTO
+            List<PersonDTO> persons = storedProcedure.getResultList();
+            for(PersonDTO person : persons) {
+                System.out.println(String.format("ID : %d Name : %s", person.getId(), person.getName()));
+            }
+        ```
+________________________________________________________________________________________________________________________
+
+
+

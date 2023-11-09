@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.1.6.Final</version>
+            <version>5.6.3.Final</version>
         </dependency>
 
         <!-- Hibernate Validator -->
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>4.1.6.Final</version>
+            <version>5.6.3.Final</version>
         </dependency>
 
         <!-- jakarta persistence API -->
@@ -96,13 +96,5 @@
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.0.0</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.6.15.Final</version>
-        </dependency>
-
     </dependencies>
 </project>
