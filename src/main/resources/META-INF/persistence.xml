@@ -3,18 +3,40 @@
              xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+    <!--
+        A persistence unit, named "mysql-persistence-unit"
+
+        One can have multiple persistence unit in single config file. Just specify the unit name at the code level and
+        JPA will be configured based on this defined unit
+    -->
     <persistence-unit name="mysql-persistence-unit">
+
+        <!-- Specifies the persistence provider class (Hibernate in this case) -->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
         <properties>
+            <!-- Configuration properties for the persistence unit -->
+
+            <!-- JDBC driver class for MySQL -->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+
+            <!-- JDBC URL for connecting to the MySQL database -->
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/temp" />
+
+            <!-- Username for the database connection -->
             <property name="javax.persistence.jdbc.user" value="root" />
+
+            <!-- Password for the database connection -->
             <property name="javax.persistence.jdbc.password" value="password@123" />
-            <!-- Specify the property to create schema every time -->
+
+            <!-- Property to create the schema every time the application runs -->
             <property name="hibernate.hbm2ddl.auto" value="create" />
+
             <!-- Enable SQL query logging -->
             <property name="hibernate.show_sql" value="true" />
-            <!-- Enable SQL query formatting -->
+
+            <!-- Enable SQL query formatting for logs -->
             <property name="hibernate.format_sql" value="true" />
         </properties>
     </persistence-unit>

@@ -10,8 +10,9 @@
     <!-- Configuration for Hibernate's SessionFactory. -->
     <session-factory>
 
-        <!-- Specifies the SQL dialect for MySQL databases. -->
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <!-- Specifies the SQL dialect for MySQL databases. This will specify hibernate to generate SQL query specific to MySQL -->
+        <!-- <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property> -->
+        <property name="hibernate.dialect">org.example.dialect.CustomMySQLDialect</property>
 
         <!-- Specifies the JDBC driver class for MySQL. -->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>

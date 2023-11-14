@@ -1,0 +1,103 @@
+*   What is lifecycle callbacks in hibernate and what are various callbacks annotation available ?
+
+>>  Lifecycle callbacks in Hibernate refer to methods that you can define in your entity classes to handle specific events
+    that occur during the lifecycle of an entity such as entity creation, updates, deletions, and loading. By defining
+    these methods, you can execute custom logic at specific points in the entity's lifecycle.
+
+    Entity Lifecycle:
+
+        The lifecycle of an entity includes stages like creation, updating, deletion, and retrieval from the database.
+        Hibernate provides lifecycle callback methods to handle these stages.
+
+    Callback Methods:
+
+        Callback methods are regular Java methods defined in your entity classes. They are annotated with Hibernate-specific
+        annotations to indicate when they should be executed.
+
+    Common annotations used for lifecycle callbacks include :
+
+        (1) @PrePersist:
+
+            This callback method is invoked before an entity is persisted (i.e., before it's saved to the database). You
+            can use it to set default values, perform validations, or execute any logic before saving the entity.
+
+        (2) @PostPersist:
+
+            This callback method is invoked after an entity is successfully persisted. It allows you to perform actions
+            after the entity is saved to the database.
+
+        (3) @PreUpdate:
+
+            This callback method is invoked before an entity is updated in the database. You can use it to modify the
+            entity's state or perform other tasks before the update operation.
+
+        (4) @PostUpdate:
+
+            This callback method is invoked after an entity is successfully updated. It allows you to perform actions
+            after the entity is updated in the database.
+
+        (5) @PreRemove:
+
+            This callback method is invoked before an entity is removed (i.e., deleted) from the database. You can use it
+            to perform cleanup or validation tasks before the entity is deleted.
+
+        (6) @PostRemove:
+
+            This callback method is invoked after an entity is successfully removed from the database. It allows you to
+            perform actions after the entity is deleted.
+
+        (7) @PostLoad:
+
+            This callback method is invoked after an entity is loaded from the database. You can use it to initialize
+            attributes or perform other tasks after the entity is retrieved.
+
+        (8) @PreCollectionRemove:
+
+            This callback method is invoked before an element is removed from a collection association (e.g., a one-to-many
+            relationship). You can use it to customize the behavior of removing elements from collections.
+
+       (9) @PostCollectionRemove:
+
+            This callback method is invoked after an element is removed from a collection association. It allows you to
+            perform actions after an element is removed from a collection.
+
+       (10) @PreCollectionUpdate:
+
+            This callback method is invoked before a collection association is updated (e.g., elements are added or removed).
+            You can use it to customize the behavior of updating collections.
+
+       (11) @PostCollectionUpdate:
+
+            This callback method is invoked after a collection association is updated. It allows you to perform actions
+            after a collection is updated.
+________________________________________________________________________________________________________________________
+
+*   What is Entity Listeners and why to use it ?
+
+>>  Entity listeners in JPA (Java Persistence API) and Hibernate are classes or methods that you can use to define custom
+    lifecycle event handling logic for entities. One can define the logic inside same entity but using a separate class will
+    have following advantages :
+
+    (1) Externalized Logic:
+
+        Entity listeners allow you to externalize lifecycle event handling logic into separate classes. This separation
+        of concerns can improve code organization, maintainability, and reusability.
+
+    (2) Loose Coupling:
+
+        Using entity listeners promotes loose coupling between your entity classes and the logic associated with their
+        lifecycle events. It allows you to change or add listeners without modifying the entity classes themselves.
+
+    (3) Reusability:
+
+        You can reuse the same entity listener class for multiple entities, reducing code duplication.
+
+    (4) Cleaner Entity Classes:
+
+        Your entity classes remain focused on defining entity properties and relationships, making them cleaner and more
+        maintainable.
+________________________________________________________________________________________________________________________
+
+
+
+

@@ -1,7 +1,7 @@
 package org.example.entity.fetching;
 
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
+//import jakarta.persistence.NamedAttributeNode;
+//import jakarta.persistence.NamedEntityGraph;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -16,9 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Entity(name = "FetchingDepartment")
-@NamedEntityGraph(name = "department.employees",
-        attributeNodes = @NamedAttributeNode("employees")
-)
+//@NamedEntityGraph(name = "department.employees",
+//        attributeNodes = @NamedAttributeNode("employees")
+//)
 public class Department {
 
     @Id
