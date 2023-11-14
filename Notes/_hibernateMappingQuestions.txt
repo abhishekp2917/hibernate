@@ -66,6 +66,16 @@
         If we don't use 'mappedBy' attribute in any of the entity, then both the entity table will have a reference column
         or foreign key to reference other table.
 
+        NOTE :
+            By defining mappedBy attribute, we specify the owner of the relation between 2 entities. Due to which, the
+            entity mapping will be modified only if make any changes through owner entity.
+
+            For instance, if we consider above entity relationship, then Employee is the owner entity. So if we change the
+            associated employee of any laptop, then the changes won't reflect as laptop is not owner entity. But if we try
+            to change associated laptop of employee entity, it will work.
+
+            This is applicable to every mapping relationship
+
     (3) Perform Database Operations
 
         You can now perform database operations using Hibernate to save, update, and retrieve Employee and Laptop entities,
