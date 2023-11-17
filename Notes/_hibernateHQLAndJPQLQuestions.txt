@@ -1,0 +1,156 @@
+*   What is HQL ?
+
+>>  HQL stands for Hibernate Query Language. It's a powerful and flexible query language provided by Hibernate. HQL is
+    an object-oriented query language that is similar to SQL but operates on persistent objects and their properties
+    instead of database tables and columns directly that means in HQL, tables are mapped to objects and columns are mapped
+    to object's attributes.
+
+    Key features of HQL:
+
+    (1) Object-Based Queries:
+
+        HQL queries operate on entity objects and their relationships rather than on the underlying database structure.
+
+    (2) Platform Independence:
+
+        HQL abstracts away the differences in SQL dialects used by various databases, making applications more portable
+        across different database systems.
+
+    (3) Support for Joins and Associations:
+
+        HQL allows for complex join operations, association traversal, and manipulation of associated objects.
+
+    (4) Parameter Binding:
+
+        Similar to SQL prepared statements, HQL supports parameter binding to guard against SQL injection and enable
+        reusable queries.
+
+    (5) Aggregations and Functions:
+
+        HQL supports aggregate functions (e.g., SUM, COUNT, AVG) and various built-in functions (e.g., string manipulation,
+        date functions) for data retrieval and manipulation.
+
+    (6) Named Queries:
+
+        HQL allows the definition of named queries within the Hibernate mappings or configuration files, providing a way
+        to reuse queries across different parts of the application.
+
+    (7) Criteria Queries:
+
+        Hibernate also provides the Criteria API, an alternative to HQL, which allows query construction through a
+        type-safe and object-oriented approach.
+
+    (8) Object Manipulation:
+
+        Apart from querying, HQL also supports operations for bulk updates and deletions directly on objects
+________________________________________________________________________________________________________________________
+
+*   What is difference between HQL and JPQL ?
+
+>>                 Hibernate                                                    JPA
+                                                              |
+       HQL is specific to the Hibernate. It's an extension    | JPQL is a part of the JPA, which is defined as a
+       of JPQL and provides additional features, functions,   | standard language specification by the JPA.
+       and optimizations beyond what is defined in the JPQL.  |
+                                                              |
+       HQL queries have Hibernate-specific syntax or features | JPQL queries are meant to be portable across different
+       that make it less portable across different ORM        | JPA implementations. It allows developers to write queries
+       frameworks compared to JPQL.                           | that can work consistently across various JPA providers.
+                                                              |
+       HQL offers a richer set of features, including better  | JPQL is a subset of HQL. While it provides essential
+       support for native SQL functions, caching strategies,  | querying capabilities, it lack some of the advanced
+       and advanced query optimizations specific to Hibernate.| features or optimizations specific to particular ORM
+                                                              | implementations like Hibernate.
+                                                              |
+________________________________________________________________________________________________________________________
+
+*   How to execute Named query ?
+
+>>  In Hibernate, a @NamedQuery annotation is used to define a named query at the entity level. This annotation allows
+    you to specify a HQL query that can be referenced by its name in your code.
+
+    Similar to storedProcedure, one can associate named query with any class by it's recommended to associate with a
+    class which is highly relatable.
+
+    Follow below steps to execute a named query :
+
+    (1) create a named query.
+
+        In this example, @NamedQuery defines a named query called "findEmployeeByFirstName" that retrieves an Employee by
+        their firstName using a HQL query.
+
+        ```
+            @NamedQuery(
+                    name = "findEmployeeByFirstName",
+                    query = "SELECT e FROM hqlEmployee e WHERE e.firstName = :firstName"
+            )
+            @Entity(name = "hqlEmployee")
+            public class Employee {
+
+                @Id
+                @Column(name = "employeeID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+                private String firstName;
+                private String lastName;
+                private int age;
+                @ManyToOne(cascade = CascadeType.ALL)
+                @JoinColumn(name = "departmentID")
+                private Department department;
+            }
+        ```
+
+    (2) Call that named query and execute it.
+
+
+        ```
+            // creating session object and beginning the transaction
+            Session session = sessionFactory.openSession();
+            Transaction transaction = session.beginTransaction();
+
+            // creating named query by passing the query name 'findEmployeeByFirstName' and passing the parameter
+            Query query = session.createNamedQuery("findEmployeeByFirstName", Employee.class);
+            query.setParameter("firstName", "Ravi");
+            List<Employee> employees = query.getResultList();
+
+            // committing and closing the session
+            transaction.commit();
+            session.close();
+        ```
+________________________________________________________________________________________________________________________
+
+*   How to use DTO (Data Transfer Object) along with HQL ?
+
+>>  Follow below steps to work with DTO and HQL :
+
+    (1) Create the DTO Class :
+
+        Create a DTO (Data Transfer Object) class that represents the structure of the data you want to fetch from the
+        database.
+
+        ```
+            public class EmployeeDTO {
+
+                private long id;
+                private String firstName;
+                private String lastName;
+                private Department department;
+            }
+        ```
+
+    (2) Execute the Query and extract the list of DTO object :
+
+        Craft an HQL query that selects specific fields from the entity and constructs DTO instances.
+
+        It is to be noted that we have to use the full name of the DTO class else it will give exception
+
+        ```
+            Query query = session2.createQuery("SELECT new org.example.entity.hql.EmployeeDTO(e.id, e.firstName, e.lastName, e.department) FROM hqlEmployee e");
+            List<EmployeeDTO> employees = query.getResultList();
+        ```
+________________________________________________________________________________________________________________________
+
+
+
+
+
