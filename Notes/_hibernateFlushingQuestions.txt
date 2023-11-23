@@ -1,0 +1,54 @@
+*   What is flushing in Hibernate ?
+
+>>  Flushing refers to the synchronization of changes made in Hibernate session (Persistence context) with the underlying
+    database. It involves taking the changes you've made to persistent objects (entities) and executing the necessary SQL
+    statements to reflect those changes in the database.
+
+    When you interact with entities in Hibernate, modifications are usually tracked in the session. However, these changes
+    aren't immediately written to the database for performance reasons. Instead, Hibernate delays the actual execution of
+    SQL statements until necessary, typically right before a query is executed or when the transaction is committed.
+
+    Flushing can occur in several scenarios:
+
+    (1) Explicit Flush:
+
+        You can manually trigger a flush by calling session.flush() in your code. This synchronizes the changes in the
+        session with the database.
+
+    (2) Before Query Execution:
+
+        Hibernate flushes the session before executing a query to ensure the query results reflect the most recent changes.
+
+    (3) Before Transaction Commit:
+
+        In most cases, Hibernate will automatically flush changes before committing a transaction to persist the
+        modifications in the database.
+________________________________________________________________________________________________________________________
+
+*   What are various flush mode ?
+
+>>  In Hibernate, the Flush Mode determines when changes made to entities within a session are synchronized (flushed)
+    with the database. Different flush modes control when these changes are written to the database.
+
+    Here are the various flush modes:
+
+    (1) AUTO:
+
+        This is the default flush mode in Hibernate. Changes are flushed before queries are executed to ensure that
+        queries fetch the most recent data. It also flushes before committing a transaction.
+
+    (2) COMMIT:
+
+        Changes are only flushed when a transaction is committed. This mode can delay database writes until the end of
+        the transaction, potentially improving performance by reducing the number of write operations.
+
+    (3) ALWAYS:
+
+        In this mode, changes are automatically flushed before every query execution, regardless of ongoing transactions.
+        It ensures that queries always reflect the most recent data but may cause more frequent database writes.
+
+    (4) MANUAL:
+
+        This mode disables automatic flushing. It requires manual triggering of the session.flush() method to synchronize
+        changes with the database. This mode provides complete control over when changes are written to the database.
+________________________________________________________________________________________________________________________
