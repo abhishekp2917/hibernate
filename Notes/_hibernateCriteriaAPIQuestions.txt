@@ -1,0 +1,95 @@
+*   What is Criteria API ?
+
+>>  The Criteria API in Hibernate is a programmatic and type-safe way to create queries for Hibernate-managed entities
+    without directly writing SQL queries. It provides a more object-oriented approach to query building, allowing
+    developers to construct queries using a fluent API and Criteria Query objects.
+
+    Here are some key points about the Criteria API in Hibernate:
+
+    (1) Type Safety:
+
+        Criteria API allows developers to create queries using Java classes and methods, ensuring type safety at compile
+        time. This reduces the chances of runtime errors due to mistyped column names or query syntax issues.
+
+    (2) Object-Oriented Querying:
+
+        It enables the construction of queries using entity classes and their attributes directly, treating them as
+        objects rather than dealing with raw SQL strings.
+
+    (3) Dynamic Query Building:
+
+        Criteria API is flexible and allows for dynamic query building by adding conditions, joins, ordering, and
+        projections based on runtime conditions or parameters.
+
+    (4) Query Reusability:
+
+        Since queries are built using Java code, they can be easily reused and parameterized, making it convenient to
+        modify queries dynamically.
+
+    (5) Portability:
+
+        Criteria API helps in writing queries that are more database-agnostic, as Hibernate translates the Criteria
+        Query objects into the appropriate SQL dialect for the underlying database.
+________________________________________________________________________________________________________________________
+
+*   How to create Criteria API query ?
+
+>>  Creating a Criteria API query in Hibernate involves several steps to construct the query programmatically.
+    Here's a step-by-step guide:
+
+    (1) Obtain CriteriaBuilder and CriteriaQuery:
+
+        Obtain the CriteriaBuilder: Get an instance of CriteriaBuilder from the Session or EntityManager. It's the
+        starting point for creating a Criteria Query.
+
+        ```
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        ```
+
+        Create a CriteriaQuery: Use the CriteriaBuilder to create a CriteriaQuery specifying the result type
+        (e.g., entity class) you want to retrieve.
+
+        ```
+            CriteriaQuery<Employee> criteriaQuery = criteriaBuilder.createQuery(Employee.class);
+        ```
+
+    (2) Define Root Entity:
+
+        Obtain the Root Entity: Use the from() method of CriteriaQuery to specify the root entity from which the query
+        starts.
+
+        ```
+            Root<Employee> root = criteriaQuery.from(Employee.class);
+        ```
+
+    (3) Add Criteria to the Query:
+
+        Build Predicates: Use the CriteriaBuilder to create predicates representing conditions (e.g., WHERE clauses).
+        Apply Predicates: Use methods like where() on CriteriaQuery to add the predicates to the query.
+
+        ```
+            criteriaQuery.select(root)
+                .where(criteriaBuilder.gt(root.get("age"), 25));
+        ```
+
+    (4) Add Sorting (Optional):
+
+        Add Ordering: Use the orderBy() method to specify sorting based on certain entity attributes.
+
+    (5) Execute the Query:
+
+        Create and Execute Query: Use the Session or EntityManager to create a TypedQuery object from the CriteriaQuery.
+        One can use Query object to hold the query but TypedQuery gives type safety at compile time as type of TypedQuery
+        must be same as result type specified at the time of CriteriaQuery creation
+
+        ```
+            TypedQuery<Employee> query = session.createQuery(criteriaQuery);
+        ```
+
+        Retrieve Results: Use getResultList() or uniqueResult() methods on the Query object to execute the query and
+        retrieve results.
+
+        ```
+            List<Employee> employees = query.getResultList();
+        ```
+________________________________________________________________________________________________________________________
