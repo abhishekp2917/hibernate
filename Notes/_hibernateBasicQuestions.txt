@@ -326,3 +326,48 @@ ________________________________________________________________________________
             |    Golden Retriever   |   2                   |
             =================================================
 ________________________________________________________________________________________________________________________
+
+*   How to persist collection of basic value types which is not an Entity ?
+
+>>  In Hibernate, to persist a collection of basic value types (like strings, integers, etc.), you can use the
+    @ElementCollection annotation along with @CollectionTable to specify the details of the collection.
+
+    Here's an example using a List of String values:
+
+    ```
+        @Entity
+        public class Friend {
+
+            @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private Long id;
+
+            @ElementCollection
+            @CollectionTable(name = "friendNickname", joinColumns = @JoinColumn(name = "friendID"))
+            @Column(name = "Nickname")
+            private List<String> nicknames;
+        }
+    ```
+
+    (1) @ElementCollection:
+
+        Indicates that the values field is a collection of basic elements (in this case, a List<String>), and it doesn't
+        require its own entity table. It'll be stored in a separate table.
+
+    (2) @CollectionTable:
+
+        Specifies the details of the table used to store the collection elements.
+
+        - name = "friendNickname":
+
+            Defines the name of the table where the collection elements will be stored.
+
+        - joinColumns = @JoinColumn(name = "friendID"):
+
+            Defines the column in the 'friendNickname' table that will serve as a foreign key to the owning entity 'Friend'.
+            The specified column friendID will reference the primary key 'id' of the 'Friend' table.
+
+    (3) @Column(name = "Nickname"):
+
+        Specifies the column name where the values of the collection will be stored in the 'friendNickname' table.
+________________________________________________________________________________________________________________________
