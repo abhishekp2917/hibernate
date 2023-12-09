@@ -26,6 +26,23 @@
         <!-- Password for database connection. -->
         <property name="hibernate.connection.password">password@123</property>
 
+        <!-- Specifies the character encoding to be used for sending data to the database -->
+        <property name="hibernate.connection.characterEncoding">UTF-8</property>
+
+        <!--
+            When set to true, it configures the JDBC connection to use Unicode characters. Unicode supports a vast range
+            of characters across different languages.
+        -->
+        <property name="hibernate.connection.useUnicode">true</property>
+
+        <!--
+             Defines the character set to be used. utf8mb4 is an encoding that supports a broader range of characters than utf8
+        -->
+        <property name="hibernate.connection.CharSet">utf8mb4</property>
+
+        <!-- Specifies whether to use SSL for database connections. -->
+        <property name="hibernate.connection.useSSL">false</property>
+
         <!-- Specifies schema creation behavior. -->
         <property name="hbm2ddl.auto">create</property>
 

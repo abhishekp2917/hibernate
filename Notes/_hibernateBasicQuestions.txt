@@ -371,3 +371,70 @@ ________________________________________________________________________________
 
         Specifies the column name where the values of the collection will be stored in the 'friendNickname' table.
 ________________________________________________________________________________________________________________________
+
+*   How to store composite keys and reference it using foreign key ?
+
+>>  Follow below steps to create composite keys through hibernate :
+
+    (1) Create a separate class to hold the composite keys
+
+        ```
+            @Embeddable
+            public class DepartmentID implements Serializable {
+
+                private long departmentID;
+                private long regionID;
+            }
+        ```
+
+        @Embeddable annotation is used to represent a composite key or embeddable object that is included as a part of
+        another entity.
+
+        Implementing Serializable is not directly related to Hibernate but is important for certain functionalities and
+        considerations. Serialization is the process of converting an object into a stream of bytes to store the object
+        or transmit it over a network. In the context of Hibernate, it might be necessary when entities need to be
+        serialized for caching, distribution across a network, or to be used in certain Java frameworks and APIs that \
+        require objects to be serializable.
+
+    (2) Define Composite Keys in Entities
+
+        ```
+            @Entity(name = "Department")
+            public class Department {
+
+                @EmbeddedId
+                private DepartmentID departmentID;
+                private String name;
+                @OneToMany(mappedBy = "department")
+                private List<Employee> employees;
+            }
+        ```
+
+        @EmbeddedId indicates that this entity has an embedded composite key. In this case it's DepartmentID
+
+        ```
+            @Entity(name = "Employee")
+            public class Employee {
+
+                @Id
+                @Column(name = "employeeID")
+                @GeneratedValue(strategy = GenerationType.IDENTITY)
+                private long id;
+                private String name;
+                @ManyToOne(cascade = CascadeType.ALL)
+                @JoinColumns({
+                        @JoinColumn(name="department", referencedColumnName = "departmentID"),
+                        @JoinColumn(name="region", referencedColumnName = "regionID")
+                })
+                private Department department;
+            }
+        ```
+
+        @JoinColumns defines the columns used to join with the referenced entity. In this case we have 2 columns/attribute
+        as composite keys, that's why in @JoinColumns we have passed 2 @JoinColumn element specifying the reference and
+        name of the composite key column/attribute
+
+    (3) Persist and query the object
+
+________________________________________________________________________________________________________________________
+
