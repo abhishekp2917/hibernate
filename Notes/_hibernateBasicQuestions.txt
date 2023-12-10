@@ -435,6 +435,64 @@ ________________________________________________________________________________
         name of the composite key column/attribute
 
     (3) Persist and query the object
+________________________________________________________________________________________________________________________
 
+*   When and how to use @MapsId annotation ?
+
+>>  The @MapsId annotation is used when you have a composite primary key in one entity that is also a part of another
+    or same entity as a foreign key. It's typically used in scenarios where an entity shares its primary key with another
+    entity.
+
+    Consider an example where Employee and Department entities are related, and Employee uses the Department's primary key
+    as its foreign key as well as its composite key.
+
+    ```
+        @Entity(name = "Department")
+        public class Department {
+
+            @Id
+            @Column(name = "departmentID")
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private long id;
+            private String name;
+            @OneToMany(mappedBy = "department")
+            private List<Employee> employees;
+        }
+    ```
+
+    Department table has a primary as departmentID
+
+    ```
+        @Embeddable
+        public class EmployeeID implements Serializable {
+
+            private long departmentID;
+            private long roleID;
+        }
+    ```
+
+    We have used EmployeeID as a composite key of departmentID and roleID
+
+    ```
+        @Entity(name = "Employee")
+        public class Employee {
+
+            @EmbeddedId
+            @Column(name = "EmployeeID")
+            private EmployeeID id;
+            private String name;
+            @ManyToOne()
+            @MapsId("departmentID")
+            private Department department;
+        }
+    ```
+
+    In Employee table, we want to use departmentID as a foreign key as well. But since it has been used as a
+    composite key by same Employee table already, if we use @JoinColumn annotation for foreign key column description, a
+    duplicate departmentID column will be created (cause we already have this column as a composite key).
+
+    To solve this, we will use @MapsId annotation in which we will specify which composite column to be used as a
+    foreign key (in this case it is 'departmentID'). By doing so, 'departmentID' column will be treated as a composite as
+    well as foreign key.
 ________________________________________________________________________________________________________________________
 

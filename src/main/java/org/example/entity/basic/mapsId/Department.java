@@ -1,4 +1,4 @@
-package org.example.entity.basic.compositeKeys;
+package org.example.entity.basic.mapsId;
 
 import lombok.*;
 import javax.persistence.*;
@@ -10,12 +10,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity(name = "CompositeDepartment")
+@Entity(name = "MapsIdDepartment")
 public class Department {
 
-    @EmbeddedId
+    @Id
     @Column(name = "departmentID")
-    private DepartmentID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     @OneToMany(mappedBy = "department")
     private List<Employee> employees;

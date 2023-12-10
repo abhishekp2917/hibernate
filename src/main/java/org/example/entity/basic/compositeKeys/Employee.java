@@ -28,8 +28,8 @@ public class Employee {
         return String.format("[Id : %d Name : %s Department : [ %d %s %s ]]",
                 id,
                 name,
-                department.getDepartmentID().getDepartmentID(),
-                department.getDepartmentID().getRegionID(),
+                department.getId().getDepartmentID(),
+                department.getId().getRegionID(),
                 department.getName());
     }
 }

@@ -28,11 +28,11 @@ public class Main7 {
 
         // creating department objects and using DepartmentID class for their IDs
         Department department1 = Department.builder()
-                                    .departmentID(new DepartmentID(1, 1))
+                                    .id(new DepartmentID(1, 1))
                                     .name("Engineering")
                                     .build();
         Department department2 = Department.builder()
-                                    .departmentID(new DepartmentID(1, 2))
+                                    .id(new DepartmentID(1, 2))
                                     .name("Engineering")
                                     .build();
 

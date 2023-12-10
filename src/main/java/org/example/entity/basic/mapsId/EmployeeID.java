@@ -1,7 +1,6 @@
-package org.example.entity.basic.compositeKeys;
+package org.example.entity.basic.mapsId;
 
 import lombok.*;
-
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
@@ -12,8 +11,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Embeddable
-public class DepartmentID implements Serializable {
+public class EmployeeID implements Serializable {
 
     private long departmentID;
-    private long regionID;
+    private long roleID;
 }
