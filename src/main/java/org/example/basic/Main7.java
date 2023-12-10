@@ -1,5 +1,5 @@
 /*
-    Code to demonstrate how to store composite keys
+    Code to demonstrate how to store composite primary keys
 */
 
 package org.example.basic;
@@ -58,6 +58,11 @@ public class Main7 {
         // getting employee object of ID 1
         Employee employee4 = session2.get(Employee.class, (long) 1);
         System.out.println(employee4);
+
+        // creating DepartmentID object as a composite primary key to fetch department object of specific id
+        DepartmentID departmentID = new DepartmentID(1, 1);
+        Department department3 = session2.get(Department.class, departmentID);
+        System.out.println(department3);
 
         // committing and closing the session
         transaction2.commit();
