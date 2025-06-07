@@ -23,6 +23,7 @@
 
         In most cases, Hibernate will automatically flush changes before committing a transaction to persist the
         modifications in the database.
+
 ________________________________________________________________________________________________________________________
 
 *   What are various flush mode ?
@@ -51,4 +52,5 @@ ________________________________________________________________________________
 
         This mode disables automatic flushing. It requires manual triggering of the session.flush() method to synchronize
         changes with the database. This mode provides complete control over when changes are written to the database.
+
 ________________________________________________________________________________________________________________________

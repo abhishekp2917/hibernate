@@ -30,6 +30,7 @@
 
         Criteria API helps in writing queries that are more database-agnostic, as Hibernate translates the Criteria
         Query objects into the appropriate SQL dialect for the underlying database.
+
 ________________________________________________________________________________________________________________________
 
 *   How to create Criteria API query ?
@@ -92,4 +93,5 @@ ________________________________________________________________________________
         ```
             List<Employee> employees = query.getResultList();
         ```
+
 ________________________________________________________________________________________________________________________

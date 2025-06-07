@@ -70,6 +70,7 @@
 
             This callback method is invoked after a collection association is updated. It allows you to perform actions
             after a collection is updated.
+
 ________________________________________________________________________________________________________________________
 
 *   What is Entity Listeners and why to use it ?
@@ -96,6 +97,68 @@ ________________________________________________________________________________
 
         Your entity classes remain focused on defining entity properties and relationships, making them cleaner and more
         maintainable.
+
+    Example:
+
+        - Define an Interface or Base Class for Audit Fields
+
+            ```
+                public interface Auditable {
+                    void setCreatedAt(LocalDateTime createdAt);
+                    void setUpdatedAt(LocalDateTime updatedAt);
+                }
+            ```
+
+        - Create the Entity Listener class.
+
+            ```
+                public class AuditEntityListener {
+
+                    @PrePersist
+                    public void prePersist(Object entity) {
+                        if (entity instanceof Auditable) {
+                            Auditable auditable = (Auditable) entity;
+                            auditable.setCreatedAt(LocalDateTime.now());
+                            auditable.setUpdatedAt(LocalDateTime.now());
+                        }
+                    }
+
+                    @PreUpdate
+                    public void preUpdate(Object entity) {
+                        if (entity instanceof Auditable) {
+                            Auditable auditable = (Auditable) entity;
+                            auditable.setUpdatedAt(LocalDateTime.now());
+                        }
+                    }
+                }
+            ```
+        
+        - Create an Entity and Attach the Listener
+
+            ```
+                @Entity
+                @EntityListeners(AuditEntityListener.class)
+                public class User implements Auditable {
+
+                    @Id
+                    @GeneratedValue(strategy = GenerationType.IDENTITY)
+                    private Long id;
+                    private String username;
+                    private LocalDateTime createdAt;
+                    private LocalDateTime updatedAt;
+
+                    @Override
+                    public void setCreatedAt(LocalDateTime createdAt) {
+                        this.createdAt = createdAt;
+                    }
+
+                    @Override
+                    public void setUpdatedAt(LocalDateTime updatedAt) {
+                        this.updatedAt = updatedAt;
+                    }
+                }
+            ```
+
 ________________________________________________________________________________________________________________________
 
 

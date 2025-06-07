@@ -25,6 +25,7 @@
 
         You can apply pessimistic locking using Hibernate's Session.lock() or Session.get() methods with the appropriate
         lock mode.
+
 ________________________________________________________________________________________________________________________
 
 *   How Optimistic Locking works and how to implement it ?
@@ -84,6 +85,7 @@ ________________________________________________________________________________
 
         After resolving the conflict, the application can reattempt the update, ensuring that the changes are applied in
         a consistent and controlled manner.
+
 ________________________________________________________________________________________________________________________
 
 *   What are various Pessimistic LockMode in Hibernate ?
@@ -153,6 +155,7 @@ ________________________________________________________________________________
         - Acquires an upgrade lock, allowing an entity to be upgraded from a shared lock to an exclusive lock later in
           the transaction.
         - Useful for upgrading shared locks to exclusive locks when necessary.
+
 ________________________________________________________________________________________________________________________
 
 *   What are the various ways to apply Pessimistic lock ?
@@ -210,5 +213,6 @@ ________________________________________________________________________________
             MyEntity entity = (MyEntity) session.get(MyEntity.class, entityId, lockOptions);
         ```
         This approach provides more control over the lock options.
+
 ________________________________________________________________________________________________________________________
 

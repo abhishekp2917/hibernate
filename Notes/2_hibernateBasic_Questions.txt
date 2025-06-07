@@ -25,12 +25,34 @@
 
     For each session or entity manager, a separate Persistence context is created and all the managing of that session or
     entity manager entities will be done by the corresponding Persistence context.
+
+________________________________________________________________________________________________________________________
+
+*   What is the difference between EntityManager and Persistence Context ?
+
+>>  (1) EntityManager:
+
+        - It is the primary JPA interface used to interact with the persistence context.
+
+        - Provides methods to perform CRUD operations like persist(), find(), merge(), remove(), etc.
+
+        - Manages entities and their state transitions (Transient → Managed → Detached → Removed).
+
+    (2) Persistence Context:
+
+        - A container of managed entity instances.
+
+        - It is created and managed implicitly by the EntityManager.
+
+        - Tracks changes to entities and ensures automatic synchronization with the database.
+
 ________________________________________________________________________________________________________________________
 
 *   How many entity of same type (Table) and same id can be there in Persistence context ?
 
 >>  A single Persistence context can have only 1 entity of same type and same id. Although, multiple Persistence context
     can have entity of same type and same id.
+
 ________________________________________________________________________________________________________________________
 
 *   Explain various Entity states ?
@@ -143,6 +165,7 @@ ________________________________________________________________________________
 
             When you call persist() on removed entity in same transaction, hibernate will move the entity to persistent
             state.
+
 ________________________________________________________________________________________________________________________
 
 *   Why it is necessary to implement hashcode() and equals() method of object when dealing with object sets ?
@@ -186,6 +209,7 @@ ________________________________________________________________________________
             session2.close();
         }
     ```
+
 ________________________________________________________________________________________________________________________
 
 *   What is the use of @OrderBy annotation ?
@@ -231,6 +255,7 @@ ________________________________________________________________________________
     ascending order (if not specifying the order direction, by default it will be in ascending order)
 
     If we leave the @OrderBy annotation empty, the collection will be order based on their id by default.
+
 ________________________________________________________________________________________________________________________
 
 *   What is Inheritance mapping ?
@@ -325,6 +350,7 @@ ________________________________________________________________________________
             =================================================
             |    Golden Retriever   |   2                   |
             =================================================
+
 ________________________________________________________________________________________________________________________
 
 *   How to persist collection of basic value types which is not an Entity ?
@@ -370,6 +396,7 @@ ________________________________________________________________________________
     (3) @Column(name = "Nickname"):
 
         Specifies the column name where the values of the collection will be stored in the 'friendNickname' table.
+
 ________________________________________________________________________________________________________________________
 
 *   How to store composite keys and reference it using foreign key ?
@@ -435,6 +462,7 @@ ________________________________________________________________________________
         name of the composite key column/attribute
 
     (3) Persist and query the object
+
 ________________________________________________________________________________________________________________________
 
 *   When and how to use @MapsId annotation ?
@@ -494,5 +522,6 @@ ________________________________________________________________________________
     To solve this, we will use @MapsId annotation in which we will specify which composite column to be used as a
     foreign key (in this case it is 'departmentID'). By doing so, 'departmentID' column will be treated as a composite as
     well as foreign key.
+
 ________________________________________________________________________________________________________________________
 

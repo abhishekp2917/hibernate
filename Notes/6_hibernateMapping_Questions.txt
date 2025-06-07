@@ -110,6 +110,7 @@
                 sessionFactory.close();
             }
         ```
+
 ________________________________________________________________________________________________________________________
 
 *   When to use and how to establish One-to-Many mapping ?
@@ -219,6 +220,7 @@ ________________________________________________________________________________
                 sessionFactory.close();
             }
         ```
+
 ________________________________________________________________________________________________________________________
 
 *   When to use and how to establish Many-to-Many mapping ?
@@ -378,6 +380,82 @@ ________________________________________________________________________________
                 sessionFactory.close();
             }
         ```
+
+________________________________________________________________________________________________________________________
+
+*   How do you handle circular references (in JSON/XML serialization) ?
+
+>>  To handle circular references in JSON/XML serialization, you can use Jackson's @JsonIdentityInfo.
+
+    It tells Jackson to assign an identifier to each object using the property specified.
+
+    If the same object is encountered again, serialize only the reference (ID) instead of repeating the entire object.
+
+    Example:
+
+        Parent.class:
+        
+            ```
+                @JsonIdentityInfo(
+                    generator = ObjectIdGenerators.PropertyGenerator.class,
+                    property = "id"
+                )
+                public class Parent {
+                    private Long id;
+                    private List<Child> children;
+                }
+            ```
+        
+        Child.class:
+
+            ```
+                @JsonIdentityInfo(
+                    generator = ObjectIdGenerators.PropertyGenerator.class,
+                    property = "id"
+                )
+                public class Child {
+                    private Long id;
+                    private Parent parent;
+                }
+            ```
+
+    Output:
+
+        Parent:
+
+            ```
+                {
+                    "id": 1,
+                    "name": "John",
+                    "children": [
+                        {
+                        "id": 101,
+                        "name": "Alice",
+                        "parent": 1
+                        },
+                        {
+                        "id": 102,
+                        "name": "Bob",
+                        "parent": 1
+                        }
+                    ]
+                }
+            ```
+        
+        Child:
+
+            ```
+                {
+                    "id": 101,
+                    "name": "Alice",
+                    "parent": {
+                        "id": 1,
+                        "name": "John",
+                        "children": [101]
+                    }
+                }
+            ```
+
 ________________________________________________________________________________________________________________________
 
 

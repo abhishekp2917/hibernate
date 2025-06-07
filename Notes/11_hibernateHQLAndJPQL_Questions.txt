@@ -43,6 +43,7 @@
     (8) Object Manipulation:
 
         Apart from querying, HQL also supports operations for bulk updates and deletions directly on objects
+
 ________________________________________________________________________________________________________________________
 
 *   What is difference between HQL and JPQL ?
@@ -62,6 +63,7 @@ ________________________________________________________________________________
        and advanced query optimizations specific to Hibernate.| features or optimizations specific to particular ORM
                                                               | implementations like Hibernate.
                                                               |
+
 ________________________________________________________________________________________________________________________
 
 *   How to execute Named query ?
@@ -117,6 +119,7 @@ ________________________________________________________________________________
             transaction.commit();
             session.close();
         ```
+
 ________________________________________________________________________________________________________________________
 
 *   How to use DTO (Data Transfer Object) along with HQL ?
@@ -148,6 +151,7 @@ ________________________________________________________________________________
             Query query = session2.createQuery("SELECT new org.example.entity.hql.EmployeeDTO(e.id, e.firstName, e.lastName, e.department) FROM hqlEmployee e");
             List<EmployeeDTO> employees = query.getResultList();
         ```
+
 ________________________________________________________________________________________________________________________
 
 

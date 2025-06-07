@@ -26,6 +26,7 @@
 
         It is to be noted that Lazy fetching of an associated entity will only work if the parent entity is in Persisted
         state. Once it's out of the Persistent context, Lazy loading will not work.
+
 ________________________________________________________________________________________________________________________
 
 *   What is N+1 fetching problem ?
@@ -47,6 +48,101 @@ ________________________________________________________________________________
 
     - Even if we change the fetch strategy to LAZY from EAGER, one accessing all the N student associated laptop entity,
       hibernate will issue N select query leading to N+1 select problem again.
+
+________________________________________________________________________________________________________________________
+
+*   What are the possible solutions of N+1 fetching problem ?
+
+>>  (1) Use @Fetch(FetchMode.JOIN):
+
+        - By using FetchMode.JOIN, Hibernate fetches the associated entities (children) and the parent in a single query
+          using an SQL JOIN. 
+
+        - It eliminates the need for multiple queries to load the children.
+        
+        Example:
+
+            - Without FetchMode.JOIN (N+1 Problem):
+
+                ```
+                    @Entity
+                    public class Parent {
+                        private Long id;
+
+                        @OneToMany(mappedBy = "parent")
+                        private List<Child> children;
+                    }
+                ```
+
+                - 1 query to get parents
+
+                    ```
+                        List<Parent> parents = parentRepository.findAll();
+                    ```
+
+                - N queries to get each children
+
+                    ```
+                        for (Parent parent : parents) {
+                            System.out.println(parent.getChildren());
+                        }
+                    ```
+
+            - With FetchMode.JOIN:
+
+                - This ensures that all parents and their children are retrieved in a single query, thus solving the N+1 problem.
+
+                ```
+                    @Entity
+                    public class Parent {
+                        private Long id;
+
+                        @OneToMany(mappedBy = "parent")
+                        @Fetch(FetchMode.JOIN)
+                        private List<Child> children;
+                    }
+                ```
+
+                ```
+                    SELECT p.*, c.*
+                    FROM parent p
+                    JOIN child c ON p.id = c.parent_id
+                ```
+
+    (2) Use @Fetch(FetchMode.SUBSELECT):
+
+        - When using FetchMode.SUBSELECT, Hibernate performs a two-step process to fetch associated entities.
+
+        - In first step (Main Query), Hibernate performs a single query to retrieve the parent entities.
+
+        - In second step (Subquery), Hibernate performs a secondary query to load the associated entities (children) of 
+          all the previously fetched parent entities in one go. 
+
+        Example:
+
+            ```
+                @Entity
+                public class Parent {
+                    private Long id;
+
+                    @OneToMany(mappedBy = "parent")
+                    @Fetch(FetchMode.SUBSELECT)
+                    private List<Child> children;
+                }
+            ```
+            
+            - 1 query to retrieve all parents:
+
+                ```
+                    SELECT * FROM parent;
+                ```
+
+            - 1 query to retrieve all associated children for the selected parents (using a subselect):
+
+                ```
+                    SELECT * FROM child WHERE parent_id IN (1, 2, 3, ...);
+                ```
+                
 ________________________________________________________________________________________________________________________
 
 *   What is an Entity graph ?
@@ -105,6 +201,7 @@ ________________________________________________________________________________
             pros.put("jakarta.persistence.fetchgraph", entityManager2.getEntityGraph("department.employees"));
             Department department2 = entityManager2.find(Department.class, (long)1, pros);
         ```
+
 ________________________________________________________________________________________________________________________
 
 *   What are various fetch mode in Hibernate native API ?
@@ -248,5 +345,6 @@ ________________________________________________________________________________
             transaction.commit();
             session.close();
         ```
+
 ________________________________________________________________________________________________________________________
 
